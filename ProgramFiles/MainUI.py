@@ -9,26 +9,25 @@ import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from sympy import pretty_print as pp, latex
+from sympy.abc import a, b, n
+
+expr = (a*b)**n
+pp(expr) # default
+print latex(expr)
 #File Imports
 
 
 #variables
 topics = []
 topiclvl = {}
+questions = {}
+
+Qcounter = 0
 
 File = open("Topics.txt",'r')
 FileR = File.read()
 subjects = FileR.split("\n")
-
-for subject in subjects:
-    topic = subject.split(",")[0]
-    difflvl = subject.split(",")[1:-1]
-    topiclvl[topic] = difflvl
-    topics.append(topic)
-
-
-print topics
-print topiclvl
 
 class MainWindow(QMainWindow):
     #Init Function
@@ -95,14 +94,24 @@ class MainWindow(QMainWindow):
         self._Topic.EchoMode(QLineEdit.Normal)
         self._Topic.setText("Topic")
         self._Topic.returnPressed.connect(lambda : self.TopicEntered())
+        self.compl_topic = QCompleter()
+        self._Topic.setCompleter(self.compl_topic)
+        self.compl_list = QStringListModel()
+        self.compl_topic.setModel(self.compl_list)
+        for subject in subjects:
+            topic = subject.split(",")[0]
+            difflvl = subject.split(",")[1:-1]
+            topiclvl[topic] = difflvl
+            topics.append(topic)
+        self.compl_list.setStringList(topics)
     #makes difficulty buttons and assigns shit
     def makeDiffButtons(self):
         self.cbx_diff = QComboBox(self)
-        self.cbx_diff.addItem("1")
-        self.cbx_diff.addItem("2")
-        self.cbx_diff.addItem("3")
-        self.cbx_diff.addItem("4")
-        self.cbx_diff.activated[int].connect(self.PrbBtnClicked)
+        self.cbx_diff.addItem("7")
+        self.cbx_diff.addItem("8")
+        self.cbx_diff.addItem("9")
+        self.cbx_diff.addItem("10")
+        self.cbx_diff.activated[int].connect(lambda: self.PrbBtnClicked(int(self.cbx_diff.currentText())))
     #make the problems section
     def makeProblem(self):
         self.lbl_Problem = QLabel(self)
@@ -126,6 +135,10 @@ class MainWindow(QMainWindow):
         self.btnCheck.setMinimumHeight(40)
         self.btnNextPrb.setMinimumHeight(40)
         self.btnExit.setMinimumHeight(40)
+        self.btnCheck.clicked.connect(lambda: self.check())
+    def check(self):
+        self.lbl_Problem.setText('{}'.format(chr(0x00B2)))
+        print(chr(0x00B2))
     #the Layout of the Program
     def LayoutofP(self):
         # add on screen items
@@ -140,14 +153,31 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.btnCheck,4,0)
         self.layout.addWidget(self.btnNextPrb,4,1)
         self.layout.addWidget(self.btnExit,4,5)
-
     """ functions for this to work """
+    # making the question look good"
+    def formQuestion(self, file):
+        counter = 0
+        for question in file:
+            Qquestion = question.split(",")[0]
+            answer = question.split(",")[1]
+            Both = []
+            Both.append(Qquestion)
+            Both.append(answer)
+            questions[counter] = Both
+            counter += 1
     #when a difficulty button is clicked
     def PrbBtnClicked(self, inte):
-        self.lbl_Problem.setText("%r" % inte)
+        try:
+            self.Topic_File = open(os.getcwd() + "/Topics/%s_%r.txt" % (str(self._Topic.text().lower()), inte), "r")
+            self.fileR = self.Topic_File.read()
+            self.questionRows = self.fileR.split("\n")
+            self.formQuestion(self.questionRows)
+        except:
+            self.lbl_Problem.setText("soemthign went wrong try again")
     #when the topic is entered
     def TopicEntered(self):
         if self._Topic.text().lower() in topics:
             self.lbl_Problem.setText("%s" % self._Topic.text().lower())
+            Qcounter = 0
         else:
             self.lbl_Problem.setText("%s does not exist or is spelt wrong" % self._Topic.text().lower())
