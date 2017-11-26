@@ -9,12 +9,8 @@ import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from sympy import pretty_print as pp, latex
-from sympy.abc import a, b, n
 
-expr = (a*b)**n
-pp(expr) # default
-print latex(expr)
+
 #File Imports
 
 
@@ -136,10 +132,15 @@ class MainWindow(QMainWindow):
         self.btnNextPrb.setMinimumHeight(40)
         self.btnExit.setMinimumHeight(40)
         self.btnCheck.clicked.connect(lambda: self.check())
+    #check if answer is right
     def check(self):
-        self.lbl_Problem.setText('{}'.format(chr(0x00B2)))
-        print(chr(0x00B2))
-    #the Layout of the Program
+        html_code = """\
+                    <h5>{HTStatement}</h5>
+                    {HTQuestion}
+                    """.format(HTStatement=questions[Qcounter][0],HTQuestion=questions[Qcounter][1])
+        self.lbl_Problem.setText(html_code)
+        #the Layout of the Program
+    #the layout
     def LayoutofP(self):
         # add on screen items
         self.layout = QGridLayout()
@@ -158,13 +159,20 @@ class MainWindow(QMainWindow):
     def formQuestion(self, file):
         counter = 0
         for question in file:
-            Qquestion = question.split(",")[0]
-            answer = question.split(",")[1]
+            statement =  question.split(",")[0]
+            Qquestion = question.split(",")[1]
+            answer = question.split(",")[2]
             Both = []
+            Both.append(statement)
             Both.append(Qquestion)
             Both.append(answer)
             questions[counter] = Both
             counter += 1
+        html_code = """\
+                    <h5>{HTStatement}</h5>
+                    {HTQuestion}
+                    """.format(HTStatement=questions[Qcounter][0],HTQuestion=questions[Qcounter][1])
+        self.lbl_Problem.setText(html_code)
     #when a difficulty button is clicked
     def PrbBtnClicked(self, inte):
         try:
@@ -181,3 +189,4 @@ class MainWindow(QMainWindow):
             Qcounter = 0
         else:
             self.lbl_Problem.setText("%s does not exist or is spelt wrong" % self._Topic.text().lower())
+    #when next question button is clicked

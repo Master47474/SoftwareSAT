@@ -1,2 +1,2 @@
-x**2,0
-x+1,-1
+Solve for x.,x<sup>2</sup> + 2,0
+Solve for x,x+1,-1
