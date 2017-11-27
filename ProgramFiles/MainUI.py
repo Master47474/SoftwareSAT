@@ -19,7 +19,6 @@ topics = []
 topiclvl = {}
 questions = {}
 
-Qcounter = 0
 
 File = open("Topics.txt",'r')
 FileR = File.read()
@@ -29,6 +28,9 @@ class MainWindow(QMainWindow):
     #Init Function
     def __init__(self):
         super(MainWindow, self).__init__()
+        #have to init
+        self.Qcounter = 0
+
         self.initUI()
 
     def initUI(self):
@@ -123,6 +125,8 @@ class MainWindow(QMainWindow):
         self.lbl_answer = QLabel("Answer:", self)
         self.lbl_answer.setAlignment(Qt.AlignBottom)
         self._answer = QLineEdit()
+        self._answer.returnPressed.connect(lambda : self.btncheck())
+        self._answer.EchoMode(QLineEdit.Normal)
     #make bottom
     def makeBottom(self):
         self.btnCheck = QPushButton("Check Answer", self)
@@ -131,16 +135,18 @@ class MainWindow(QMainWindow):
         self.btnCheck.setMinimumHeight(40)
         self.btnNextPrb.setMinimumHeight(40)
         self.btnExit.setMinimumHeight(40)
-        self.btnCheck.clicked.connect(lambda: self.check())
+        self.btnCheck.clicked.connect(lambda: self.btncheck())
+        self.btnNextPrb.clicked.connect(lambda: self.btnNextQuestion())
     #check if answer is right
-    def check(self):
-        html_code = """\
-                    <h5>{HTStatement}</h5>
-                    {HTQuestion}
-                    """.format(HTStatement=questions[Qcounter][0],HTQuestion=questions[Qcounter][1])
-        self.lbl_Problem.setText(html_code)
-        #the Layout of the Program
-    #the layout
+    def btncheck(self):
+        try:
+            if int(self._answer.text()) == int(questions[self.Qcounter][2]):
+                self._answer.setText("RIGHT WOOOO, dare try another?")
+            else:
+                self._answer.setText("WRONGGG")
+        except:
+            self._answer.setText("BOIIII put numbers in here")
+    #the Layout of the Program
     def LayoutofP(self):
         # add on screen items
         self.layout = QGridLayout()
@@ -171,11 +177,12 @@ class MainWindow(QMainWindow):
         html_code = """\
                     <h5>{HTStatement}</h5>
                     {HTQuestion}
-                    """.format(HTStatement=questions[Qcounter][0],HTQuestion=questions[Qcounter][1])
+                    """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
         self.lbl_Problem.setText(html_code)
     #when a difficulty button is clicked
     def PrbBtnClicked(self, inte):
         try:
+            self.Qcounter = 0
             self.Topic_File = open(os.getcwd() + "/Topics/%s_%r.txt" % (str(self._Topic.text().lower()), inte), "r")
             self.fileR = self.Topic_File.read()
             self.questionRows = self.fileR.split("\n")
@@ -186,7 +193,17 @@ class MainWindow(QMainWindow):
     def TopicEntered(self):
         if self._Topic.text().lower() in topics:
             self.lbl_Problem.setText("%s" % self._Topic.text().lower())
-            Qcounter = 0
+            self.Qcounter = 0
         else:
             self.lbl_Problem.setText("%s does not exist or is spelt wrong" % self._Topic.text().lower())
     #when next question button is clicked
+    def btnNextQuestion(self):
+        try:
+            self.Qcounter += 1
+            html_code = """\
+                        <h5>{HTStatement}</h5>
+                        {HTQuestion}
+                        """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
+            self.lbl_Problem.setText(html_code)
+        except:
+            self.lbl_Problem.setText("uh oh there seems to be no more Questions. or something went wrong!")

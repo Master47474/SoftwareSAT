@@ -1,2 +1,2 @@
-Solve for x.,x<sup>2</sup> + 2,0
+Solve for the x intercept/s.,x<sup>2</sup>,0
 Solve for x,x+1,-1
