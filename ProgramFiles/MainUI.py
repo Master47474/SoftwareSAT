@@ -205,5 +205,6 @@ class MainWindow(QMainWindow):
                         {HTQuestion}
                         """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
             self.lbl_Problem.setText(html_code)
+            self._answer.setText("")
         except:
             self.lbl_Problem.setText("uh oh there seems to be no more Questions. or something went wrong!")
