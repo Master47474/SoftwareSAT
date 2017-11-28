@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
         self.center()
         self.setWindowTitle('Testing UI For Problem Page')
         self.setWindowIcon(QIcon('placeholder.png'))
+        self.resize(500,400)
 
         self.makeMenuBar()
         self.makeDiffButtons()
@@ -119,7 +120,7 @@ class MainWindow(QMainWindow):
         self.lbl_Problem.setAlignment(Qt.AlignTop)
         self.lbl_Problem.setMaximumSize(200,100)
         self.imgProblem = QLabel(self)
-        self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/pythag1.png"))
+        #self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/pythag1.png"))
         self.imgProblem.setScaledContents(True)
         self.imgProblem.setMaximumSize(300,300)
         self.lbl_answer = QLabel("Answer:", self)
@@ -168,10 +169,12 @@ class MainWindow(QMainWindow):
             statement =  question.split(",")[0]
             Qquestion = question.split(",")[1]
             answer = question.split(",")[2]
+            img = question.split(",")[3]
             Both = []
             Both.append(statement)
             Both.append(Qquestion)
             Both.append(answer)
+            Both.append(img)
             questions[counter] = Both
             counter += 1
         html_code = """\
@@ -179,6 +182,10 @@ class MainWindow(QMainWindow):
                     {HTQuestion}
                     """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
         self.lbl_Problem.setText(html_code)
+        if questions[self.Qcounter][3] != "null":
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][3]))
+        else:
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
     #when a difficulty button is clicked
     def PrbBtnClicked(self, inte):
         try:
@@ -206,5 +213,10 @@ class MainWindow(QMainWindow):
                         """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
             self.lbl_Problem.setText(html_code)
             self._answer.setText("")
+            if questions[self.Qcounter][3] != "null":
+                self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][3]))
+            else:
+                self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
         except:
             self.lbl_Problem.setText("uh oh there seems to be no more Questions. or something went wrong!")
+    #back to main screen
