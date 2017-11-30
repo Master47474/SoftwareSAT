@@ -1,7 +1,7 @@
 """
 Author: Marcus Facchino
 Description:
-    The UI of the Main Window
+    The UI of the Main Problem Window
 """
 
 #Imports
@@ -12,6 +12,7 @@ from PyQt5.QtCore import *
 
 
 #File Imports
+import MenuUI as menui
 
 
 #variables
@@ -85,6 +86,10 @@ class MainWindow(QMainWindow):
         self.mbFile.addMenu(self.tabTest)
     #makes tpoic label and serch bar
     def makeTopicRow(self):
+        # reset variables
+        topics = []
+        topiclvl = {}
+        questions = {}
         #topic and entering the topic
         self.lbl_Diff = QLabel("Difficulty :")
         self._Topic = QLineEdit()
@@ -138,6 +143,7 @@ class MainWindow(QMainWindow):
         self.btnExit.setMinimumHeight(40)
         self.btnCheck.clicked.connect(lambda: self.btncheck())
         self.btnNextPrb.clicked.connect(lambda: self.btnNextQuestion())
+        self.btnExit.clicked.connect(lambda: self.toMenu())
     #check if answer is right
     def btncheck(self):
         try:
@@ -201,6 +207,7 @@ class MainWindow(QMainWindow):
         if self._Topic.text().lower() in topics:
             self.lbl_Problem.setText("%s" % self._Topic.text().lower())
             self.Qcounter = 0
+
         else:
             self.lbl_Problem.setText("%s does not exist or is spelt wrong" % self._Topic.text().lower())
     #when next question button is clicked
@@ -220,3 +227,7 @@ class MainWindow(QMainWindow):
         except:
             self.lbl_Problem.setText("uh oh there seems to be no more Questions. or something went wrong!")
     #back to main screen
+    def toMenu(self):
+        ex = menui.StartMenu()
+        ex.show()
+        self.close()
