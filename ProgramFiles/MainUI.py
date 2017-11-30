@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         self.mbFile.addMenu(self.tabTest)
     #makes tpoic label and serch bar
     def makeTopicRow(self):
-        # reset variables
+        # reset variablesz
         topics = []
         topiclvl = {}
         questions = {}
@@ -115,6 +115,8 @@ class MainWindow(QMainWindow):
         self.cbx_diff.addItem("8")
         self.cbx_diff.addItem("9")
         self.cbx_diff.addItem("10")
+        self.cbx_diff.addItem("11")
+        self.cbx_diff.addItem("12")
         self.cbx_diff.activated[int].connect(lambda: self.PrbBtnClicked(int(self.cbx_diff.currentText())))
     #make the problems section
     def makeProblem(self):
@@ -201,13 +203,13 @@ class MainWindow(QMainWindow):
             self.questionRows = self.fileR.split("\n")
             self.formQuestion(self.questionRows)
         except:
-            self.lbl_Problem.setText("soemthign went wrong try again")
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
+            self.lbl_Problem.setText("That Topic in that Difficulty does not exit. maybe try another?")
     #when the topic is entered
     def TopicEntered(self):
         if self._Topic.text().lower() in topics:
             self.lbl_Problem.setText("%s" % self._Topic.text().lower())
             self.Qcounter = 0
-
         else:
             self.lbl_Problem.setText("%s does not exist or is spelt wrong" % self._Topic.text().lower())
     #when next question button is clicked
