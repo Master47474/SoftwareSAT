@@ -23,5 +23,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     #ex = mui.MainWindow()
     ex = menui.StartMenu()
+    #ex = maui.MainWindow()
     ex.show()
     sys.exit(app.exec_())

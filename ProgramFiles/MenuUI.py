@@ -10,9 +10,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 #File Imports
-import MainUI as mui
 import MainAdminUI as maui
-
+import MainUI as mui
 
 class StartMenu(QMainWindow):
     #init
@@ -61,15 +60,15 @@ class StartMenu(QMainWindow):
         self.layout.addWidget(self.btnExit,2,0)
     #switching window
     def toAdmin(self):
-        print "hello"
-        ex = maui.StartMenu()
+        global ex
+        ex = maui.MainAWindow()
         ex.show()
-
+        self.close()
     def toProblem(self):
+        global ex
         ex = mui.MainWindow()
         ex.show()
         self.close()
-
     #exit
     def Exit(self):
         QApplication.quit()
