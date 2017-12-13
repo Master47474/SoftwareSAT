@@ -14,7 +14,7 @@ from PyQt5.QtCore import *
 
 #File Imports
 import MenuUI as menui
-
+import AdminEditTopic as ateui
 
 File = open("Topics.txt",'r')
 FileR = File.read()
@@ -45,21 +45,23 @@ class MainAWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
     def createBtns(self):
-        self.lbl_Diff = QLabel("select a topic:")
+        self.lbl_Topic = QLabel("select a topic:")
         self.cbx_topics = QComboBox(self)
         for subject in subjects:
             self.cbx_topics.addItem(str(subject.split(",")[0]))
         self.btn_EditT = QPushButton("Edit Topic",self)
         self.btn_EditQ = QPushButton("Edit Question",self)
         self.btn_AddQ = QPushButton("Add Question",self)
-        self.lbl_Diff.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.lbl_Topic.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.btn_AddT = QPushButton("Add Topic",self)
         self.btnExit = QPushButton("Exit", self)
         self.btnExit.setMinimumHeight(40)
         self.btnExit.clicked.connect(lambda: self.toMenu())
+        self.btn_EditT.clicked.connect(lambda: self.toEditTop())
+
     def LayoutofP(self):
         self.layout = QGridLayout()
-        self.layout.addWidget(self.lbl_Diff,0,0)
+        self.layout.addWidget(self.lbl_Topic,0,0)
         self.layout.addWidget(self.cbx_topics,0,1)
         self.layout.addWidget(self.btn_EditT,1,0)
         self.layout.addWidget(self.btn_EditQ,2,0)
@@ -68,6 +70,13 @@ class MainAWindow(QMainWindow):
         self.layout.addWidget(self.btnExit,4,2)
 
     def toMenu(self):
+        global ex
         ex = menui.StartMenu()
+        ex.show()
+        self.close()
+
+    def toEditTop(self):
+        global ex
+        ex = ateui.MainWindow(self.cbx_topics.currentText())
         ex.show()
         self.close()
