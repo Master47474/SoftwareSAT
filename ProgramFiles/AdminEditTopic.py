@@ -23,7 +23,7 @@ SubjectsDic = {}
 for subject in subjects:
     listt = []
     topic = subject.split(",")[0]
-    topicDiff = subject.split(",")[1:-1]
+    topicDiff = subject.split(",")[1:]
     SubjectsDic[topic] = topic, topicDiff
 
 
@@ -95,7 +95,17 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.btnConfirm,3,1,1,3)
         self.layout.addWidget(self.btnExit,3,4,1,3)
 
+    def Splittting(self):
+        SubjectsDic = {}
+        for subject in subjects:
+            listt = []
+            topic = subject.split(",")[0]
+            topicDiff = subject.split(",")[1:]
+            SubjectsDic[topic] = topic, topicDiff
+
     def confirm(self):
+        self.Splittting()
+        cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
         #checks if name field has input
         name = False
         prev = " "
@@ -106,6 +116,10 @@ class MainWindow(QMainWindow):
             else:
                 prev = num
                 print "good"
+        for num in range(0,len(cbx)):
+            if cbx[num].isChecked():
+                SubjectsDic[str(self.TopicName)][1][num] = 0
+
 
     def Delete(self):
         if self.TopicName in SubjectsDic:
