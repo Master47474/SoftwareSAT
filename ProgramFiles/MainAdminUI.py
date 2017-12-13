@@ -54,6 +54,9 @@ class MainAWindow(QMainWindow):
         self.btn_AddQ = QPushButton("Add Question",self)
         self.lbl_Diff.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.btn_AddT = QPushButton("Add Topic",self)
+        self.btnExit = QPushButton("Exit", self)
+        self.btnExit.setMinimumHeight(40)
+        self.btnExit.clicked.connect(lambda: self.toMenu())
     def LayoutofP(self):
         self.layout = QGridLayout()
         self.layout.addWidget(self.lbl_Diff,0,0)
@@ -62,3 +65,9 @@ class MainAWindow(QMainWindow):
         self.layout.addWidget(self.btn_EditQ,2,0)
         self.layout.addWidget(self.btn_AddQ,3,0)
         self.layout.addWidget(self.btn_AddT,1,2)
+        self.layout.addWidget(self.btnExit,4,2)
+
+    def toMenu(self):
+        ex = menui.StartMenu()
+        ex.show()
+        self.close()
