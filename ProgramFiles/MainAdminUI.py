@@ -44,9 +44,13 @@ class MainAWindow(QMainWindow):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
     def createBtns(self):
         self.lbl_Topic = QLabel("select a topic:")
         self.cbx_topics = QComboBox(self)
+        File = open("Topics.txt",'r')
+        FileR = File.read()
+        subjects = FileR.split("\n")
         for subject in subjects:
             self.cbx_topics.addItem(str(subject.split(",")[0]))
         self.btn_EditT = QPushButton("Edit Topic",self)

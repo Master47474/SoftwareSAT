@@ -10,21 +10,23 @@ import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+import collections as col
 
 #File Imports
-import MenuUI as menui
+import MainAdminUI as maui
 
 
 File = open("Topics.txt",'r')
 FileR = File.read()
 subjects = FileR.split("\n")
+File.close()
 
 SubjectsDic = {}
 for subject in subjects:
     listt = []
     topic = subject.split(",")[0]
     topicDiff = subject.split(",")[1:]
-    SubjectsDic[topic] = topic, topicDiff
+    SubjectsDic[topic] = topic,topicDiff
 
 
 class MainWindow(QMainWindow):
@@ -96,15 +98,20 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.btnExit,3,4,1,3)
 
     def Splittting(self):
+        File = open("Topics.txt",'r')
+        FileR = File.read()
+        subjects = FileR.split("\n")
+        File.close()
         SubjectsDic = {}
         for subject in subjects:
             listt = []
             topic = subject.split(",")[0]
             topicDiff = subject.split(",")[1:]
-            SubjectsDic[topic] = topic, topicDiff
+            SubjectsDic[topic] = topic,topicDiff
+        return SubjectsDic
 
     def confirm(self):
-        self.Splittting()
+        SubjectsDic = self.Splittting()
         cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
         #checks if name field has input
         name = False
@@ -114,11 +121,30 @@ class MainWindow(QMainWindow):
                 print "enter a valid name"
                 break
             else:
+                if num == str(self._TopicName.text())[-1]:
+                    SubjectsDic[str(self.TopicName)] = ("%s" % str(self._TopicName.text()).lower(),) + SubjectsDic[str(self.TopicName)][1:]
                 prev = num
-                print "good"
-        for num in range(0,len(cbx)):
-            if cbx[num].isChecked():
-                SubjectsDic[str(self.TopicName)][1][num] = 0
+        try:
+            for num in range(0,len(cbx)):
+                if cbx[num].isChecked():
+                    SubjectsDic[str(self.TopicName)][1][num] = 0
+        except:
+            print "failed with check boxes"
+        ordered = col.OrderedDict(sorted(SubjectsDic.items()))
+        File = File = open("Topics.txt",'w')
+        counter = 0
+        for line in ordered:
+            if counter == len(ordered) - 1:
+                File.write("%s,%d,%d,%d,%d,%d,%d" % (SubjectsDic[line][0],int(SubjectsDic[line][1][0]),\
+                                                        int(SubjectsDic[line][1][1]),int(SubjectsDic[line][1][2]),\
+                                                        int(SubjectsDic[line][1][3]),int(SubjectsDic[line][1][4]),int(SubjectsDic[line][1][5])))
+            else:
+                File.write("%s,%d,%d,%d,%d,%d,%d\n" % (SubjectsDic[line][0],int(SubjectsDic[line][1][0]),\
+                                                    int(SubjectsDic[line][1][1]),int(SubjectsDic[line][1][2]),\
+                                                    int(SubjectsDic[line][1][3]),int(SubjectsDic[line][1][4]),int(SubjectsDic[line][1][5])))
+            counter += 1
+        File.close()
+        self.toMenu()
 
 
     def Delete(self):
@@ -128,6 +154,6 @@ class MainWindow(QMainWindow):
             print "uh oh"
 
     def toMenu(self):
-        ex = menui.StartMenu()
+        ex = maui.MainAWindow()
         ex.show()
         self.close()
