@@ -152,13 +152,16 @@ class MainWindow(QMainWindow):
                     SubjectsDic[str(self.TopicName)][1][num] = int(cbx[num].text())
                 else:
                     SubjectsDic[str(self.TopicName)][1][num] = 0
+
+
         except:
             print "failed with check boxes"
-        ordered = col.OrderedDict(sorted(SubjectsDic.items()))
+        ordered = {}
+        for key in sorted(SubjectsDic.iterkeys()):
+            ordered[key] = SubjectsDic[key]
         File = File = open("Topics.txt",'w')
         counter = 0
         for line in ordered:
-            print SubjectsDic[line]
             if counter == len(ordered) - 1:
                 File.write("%s,%d,%d,%d,%d,%d,%d" % (SubjectsDic[line][0],int(SubjectsDic[line][1][0]),\
                                                         int(SubjectsDic[line][1][1]),int(SubjectsDic[line][1][2]),\
@@ -171,12 +174,12 @@ class MainWindow(QMainWindow):
         File.close()
         self.toMenu()
 
-
     def Delete(self):
         if self.TopicName in SubjectsDic:
             print "%s" % SubjectsDic[self.TopicName][0]
         else:
             print "uh oh"
+
 
     def toMenu(self):
         ex = maui.MainAWindow()
