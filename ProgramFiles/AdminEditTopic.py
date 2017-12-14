@@ -69,6 +69,11 @@ class MainWindow(QMainWindow):
         self.chb_diff4 = QCheckBox("10",self)
         self.chb_diff5 = QCheckBox("11",self)
         self.chb_diff6 = QCheckBox("12",self)
+        cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
+        SubjectsDic = self.Splittting()
+        for num in range(0,len(cbx)):
+            if int(SubjectsDic[str(self.TopicName)][1][num]) != 0:
+                cbx[num].setChecked(True)
         self.lbl_TopicN.setFixedHeight(50)
         self.btnExit = QPushButton("Exit", self)
         self.btnConfirm = QPushButton("Confirm", self)
@@ -145,12 +150,15 @@ class MainWindow(QMainWindow):
             for num in range(0,len(cbx)):
                 if cbx[num].isChecked():
                     SubjectsDic[str(self.TopicName)][1][num] = int(cbx[num].text())
+                else:
+                    SubjectsDic[str(self.TopicName)][1][num] = 0
         except:
             print "failed with check boxes"
         ordered = col.OrderedDict(sorted(SubjectsDic.items()))
         File = File = open("Topics.txt",'w')
         counter = 0
         for line in ordered:
+            print SubjectsDic[line]
             if counter == len(ordered) - 1:
                 File.write("%s,%d,%d,%d,%d,%d,%d" % (SubjectsDic[line][0],int(SubjectsDic[line][1][0]),\
                                                         int(SubjectsDic[line][1][1]),int(SubjectsDic[line][1][2]),\
