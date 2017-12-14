@@ -122,12 +122,29 @@ class MainWindow(QMainWindow):
                 break
             else:
                 if num == str(self._TopicName.text())[-1]:
+                    folder = "C:\Users\marcus\Desktop\Coding\PracticeSChool\SoftwareSAT\ProgramFiles\Topics"
                     SubjectsDic[str(self.TopicName)] = ("%s" % str(self._TopicName.text()).lower(),) + SubjectsDic[str(self.TopicName)][1:]
+                    for root, dirs, filenames in os.walk(folder):
+                        for filename in filenames:
+                            pathiter = (os.path.join(root, filename) for root, _, filenames in os.walk(folder) for filename in filenames)
+                            for path in pathiter:
+                                if filename.startswith(str(self.TopicName)):
+                                    try:
+                                        newname = path.replace("%s_%d.txt" % (self.TopicName, int(filename[len(self.TopicName)+1:-3])), "%s_%d.txt" % (SubjectsDic[self.TopicName][0]\
+                                                                                                        , int(filename[len(self.TopicName)+1:-3])))
+                                        if newname != path:
+                                            os.rename(path, newname)
+                                    except:
+                                        newname = path.replace("%s_%d.txt" % (self.TopicName, int(filename[len(self.TopicName)+1:-4])), "%s_%d.txt" % (SubjectsDic[self.TopicName][0]\
+                                                                                                        , int(filename[len(self.TopicName)+1:-4])))
+                                        if newname != path:
+                                            os.rename(path, newname)
+
                 prev = num
         try:
             for num in range(0,len(cbx)):
                 if cbx[num].isChecked():
-                    SubjectsDic[str(self.TopicName)][1][num] = 0
+                    SubjectsDic[str(self.TopicName)][1][num] = int(cbx[num].text())
         except:
             print "failed with check boxes"
         ordered = col.OrderedDict(sorted(SubjectsDic.items()))

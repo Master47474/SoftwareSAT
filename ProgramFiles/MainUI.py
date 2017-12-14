@@ -86,6 +86,9 @@ class MainWindow(QMainWindow):
         self.mbFile.addMenu(self.tabTest)
     #makes tpoic label and serch bar
     def makeTopicRow(self):
+        File = open("Topics.txt",'r')
+        FileR = File.read()
+        subjects = FileR.split("\n")
         # reset variablesz
         topics = []
         topiclvl = {}
@@ -107,6 +110,7 @@ class MainWindow(QMainWindow):
             difflvl = subject.split(",")[1:-1]
             topiclvl[topic] = difflvl
             topics.append(topic)
+        print topics
         self.compl_list.setStringList(topics)
     #makes difficulty buttons and assigns shit
     def makeDiffButtons(self):
