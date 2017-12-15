@@ -176,10 +176,29 @@ class MainWindow(QMainWindow):
 
     def Delete(self):
         if self.TopicName in SubjectsDic:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Warning!")
+            msg.setInformativeText("You are about to Delete %s and all of the files Accociated with it" % self.TopicName)
+            msg.setWindowTitle("WARNING")
+            msg.setDetailedText("Topic: %s \n and all of the files Accociated with it" % self.TopicName)
+            msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msg.buttonClicked.connect(self.msgbtn)
+            self.retval = msg.exec_()
+            print "value of pressed message box button:", self.retval
             print "%s" % SubjectsDic[self.TopicName][0]
         else:
             print "uh oh"
 
+    def msgbtn(self,i):
+        if i.text() == "OK":
+            self.PostDelete()
+        else:
+            print "Button pressed is:", i.text()
+
+    def PostDelete(self):
+        print "deleted"
+        self.toMenu()
 
     def toMenu(self):
         ex = maui.MainAWindow()
