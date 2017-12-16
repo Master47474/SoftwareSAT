@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
                 break
             else:
                 if num == str(self._TopicName.text())[-1]:
-                    folder = "C:\Users\marcus\Desktop\Coding\PracticeSChool\SoftwareSAT\ProgramFiles\Topics"
+                    folder = "%s\Topics" %os.getcwd()
                     SubjectsDic[str(self.TopicName)] = ("%s" % str(self._TopicName.text()).lower(),) + SubjectsDic[str(self.TopicName)][1:]
                     for root, dirs, filenames in os.walk(folder):
                         for filename in filenames:
@@ -181,17 +181,52 @@ class MainWindow(QMainWindow):
             msg.setText("Warning!")
             msg.setInformativeText("You are about to Delete %s and all of the files Accociated with it" % self.TopicName)
             msg.setWindowTitle("WARNING")
-            msg.setDetailedText("Topic: %s \n and all of the files Accociated with it" % self.TopicName)
+            folder = "%s\Topics" % os.getcwd()
+            items = []
+            for root, dirs, filenames in os.walk(folder):
+                for filename in filenames:
+                    if filename.startswith(str(self.TopicName)):
+                        try:
+                            items.append(str("Diffuculty: %d" % int(filename[len(self.TopicName)+1:-4])))
+                        except:
+                            items.append(str("Diffuculty: %d" % int(filename[len(self.TopicName)+1:-4])))
+            detailedmsg = "Topic: %s\n%s" % (self.TopicName,'\n'.join(map(str, items)))
+            msg.setDetailedText(detailedmsg)
             msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msg.buttonClicked.connect(self.msgbtn)
             self.retval = msg.exec_()
             print "value of pressed message box button:", self.retval
-            print "%s" % SubjectsDic[self.TopicName][0]
         else:
             print "uh oh"
 
     def msgbtn(self,i):
         if i.text() == "OK":
+            folder = "%s\Topics" % os.getcwd()
+            for root, dirs, filenames in os.walk(folder):
+                for filename in filenames:
+                    if filename.startswith(str(self.TopicName)):
+                        try:
+                            os.remove(os.path.join(folder,filename))
+                        except:
+                            print "error"
+            SubjectsDic = self.Splittting()
+            del SubjectsDic[self.TopicName]
+            ordered = {}
+            for key in sorted(SubjectsDic.iterkeys()):
+                ordered[key] = SubjectsDic[key]
+            File = File = open("Topics.txt",'w')
+            counter = 0
+            for line in ordered:
+                if counter == len(ordered) - 1:
+                    File.write("%s,%d,%d,%d,%d,%d,%d" % (SubjectsDic[line][0],int(SubjectsDic[line][1][0]),\
+                                                            int(SubjectsDic[line][1][1]),int(SubjectsDic[line][1][2]),\
+                                                            int(SubjectsDic[line][1][3]),int(SubjectsDic[line][1][4]),int(SubjectsDic[line][1][5])))
+                else:
+                    File.write("%s,%d,%d,%d,%d,%d,%d\n" % (SubjectsDic[line][0],int(SubjectsDic[line][1][0]),\
+                                                        int(SubjectsDic[line][1][1]),int(SubjectsDic[line][1][2]),\
+                                                        int(SubjectsDic[line][1][3]),int(SubjectsDic[line][1][4]),int(SubjectsDic[line][1][5])))
+                counter += 1
+            File.close()
             self.PostDelete()
         else:
             print "Button pressed is:", i.text()
