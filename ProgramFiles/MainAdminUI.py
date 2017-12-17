@@ -15,6 +15,7 @@ from PyQt5.QtCore import *
 #File Imports
 import MenuUI as menui
 import AdminEditTopic as ateui
+import AddQuestionUI as aqui
 
 File = open("Topics.txt",'r')
 FileR = File.read()
@@ -62,14 +63,16 @@ class MainAWindow(QMainWindow):
         self.btnExit.setMinimumHeight(40)
         self.btnExit.clicked.connect(lambda: self.toMenu())
         self.btn_EditT.clicked.connect(lambda: self.toEditTop())
+        self.btn_AddQ.clicked.connect(lambda: self.toAddQ())
+
 
     def LayoutofP(self):
         self.layout = QGridLayout()
         self.layout.addWidget(self.lbl_Topic,0,0)
         self.layout.addWidget(self.cbx_topics,0,1)
         self.layout.addWidget(self.btn_EditT,1,0)
-        self.layout.addWidget(self.btn_EditQ,2,0)
-        self.layout.addWidget(self.btn_AddQ,3,0)
+        self.layout.addWidget(self.btn_AddQ,2,0)
+        self.layout.addWidget(self.btn_EditQ,3,0)
         self.layout.addWidget(self.btn_AddT,1,2)
         self.layout.addWidget(self.btnExit,4,2)
 
@@ -82,5 +85,11 @@ class MainAWindow(QMainWindow):
     def toEditTop(self):
         global ex
         ex = ateui.MainWindow(self.cbx_topics.currentText())
+        ex.show()
+        self.close()
+
+    def toAddQ(self):
+        global ex
+        ex = aqui.MainWindow(self.cbx_topics.currentText())
         ex.show()
         self.close()

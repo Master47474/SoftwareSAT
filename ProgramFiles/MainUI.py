@@ -110,7 +110,6 @@ class MainWindow(QMainWindow):
             difflvl = subject.split(",")[1:-1]
             topiclvl[topic] = difflvl
             topics.append(topic)
-        print topics
         self.compl_list.setStringList(topics)
     #makes difficulty buttons and assigns shit
     def makeDiffButtons(self):
@@ -180,22 +179,19 @@ class MainWindow(QMainWindow):
         for question in file:
             statement =  question.split(",")[0]
             Qquestion = question.split(",")[1]
-            answer = question.split(",")[2]
-            img = question.split(",")[3]
+            img = question.split(",")[2]
             Both = []
             Both.append(statement)
             Both.append(Qquestion)
-            Both.append(answer)
             Both.append(img)
             questions[counter] = Both
             counter += 1
         html_code = """\
-                    <h5>{HTStatement}</h5>
-                    {HTQuestion}
-                    """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
+                    {HTStatement}
+                    """.format(HTStatement=questions[self.Qcounter][0])
         self.lbl_Problem.setText(html_code)
-        if questions[self.Qcounter][3] != "null":
-            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][3]))
+        if questions[self.Qcounter][2] != "null":
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][2]))
         else:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
     #when a difficulty button is clicked
