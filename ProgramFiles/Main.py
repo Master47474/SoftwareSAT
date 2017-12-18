@@ -15,14 +15,11 @@ import MenuUI as menui
 import MainAdminUI as maui
 
 
-
 #variables
 
-
+#starts the Application
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    #ex = mui.MainWindow()
     ex = menui.StartMenu()
-    #ex = maui.MainWindow()
     ex.show()
     sys.exit(app.exec_())

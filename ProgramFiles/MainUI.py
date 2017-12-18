@@ -20,18 +20,18 @@ topics = []
 topiclvl = {}
 questions = {}
 
-
+#Spliting the file into Topics (one per row)
 File = open("Topics.txt",'r')
 FileR = File.read()
 subjects = FileR.split("\n")
 
+#main window
 class MainWindow(QMainWindow):
     #Init Function
     def __init__(self):
         super(MainWindow, self).__init__()
-        #have to init
+        #init Variables
         self.Qcounter = 0
-
         self.initUI()
 
     def initUI(self):
@@ -41,30 +41,35 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon('placeholder.png'))
         self.resize(500,400)
 
+        #makes the elements of the UI
         self.makeMenuBar()
         self.makeDiffButtons()
         self.makeTopicRow()
         self.makeProblem()
         self.makeBottom()
+        #layouts the elements
         self.LayoutofP()
 
         Widget_M = QWidget()
         Widget_M.setLayout(self.layout)
         self.setCentralWidget(Widget_M)
-    # to Center the application
+
+    #Center the Window on screen
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
+        #moving the window to center
         self.move(qr.topLeft())
+
     #makes the menu bar
     def makeMenuBar(self):
         #make the menu bar
         self.menuBar = self.menuBar()
         #make a tabe under the menu Bar
         self.mbFile = self.menuBar.addMenu('&File')
-        #make the tabs to gunder the file menu
 
+        #make the tabs to go under the file menu
         #problem Tab
         self.tabPromblem = QMenu('Problem', self)
         self.tabPNewP = QAction('New Problem', self)
@@ -77,19 +82,22 @@ class MainWindow(QMainWindow):
         #adding the submenus to the problem tab
         self.tabPromblem.addAction(self.tabPNewP)
         self.tabPromblem.addAction(self.tabPSaveP)
+
         #adding the submenus to the Test tab
         self.tabTest.addAction(self.tabTNewT)
         self.tabTest.addAction(self.tabTSaveT)
 
-        """ add all menus to the file tab """
+        #add all menus to the file tab
         self.mbFile.addMenu(self.tabPromblem)
         self.mbFile.addMenu(self.tabTest)
-    #makes tpoic label and serch bar
+
+    #makes topic label and search bar
     def makeTopicRow(self):
+        #resplitting file in case of any changes to topic file
         File = open("Topics.txt",'r')
         FileR = File.read()
         subjects = FileR.split("\n")
-        # reset variablesz
+        #reset variables
         topics = []
         topiclvl = {}
         questions = {}
@@ -97,67 +105,74 @@ class MainWindow(QMainWindow):
         self.lbl_Diff = QLabel("Difficulty :")
         self._Topic = QLineEdit()
         self._Topic.setPlaceholderText("Topic")
+        #cosmetic effects to UI Elements
         self._Topic.setStyleSheet("QCustomLineEdit{color:gray;}")
         self._Topic.EchoMode(QLineEdit.Normal)
         self._Topic.setText("Topic")
-        self._Topic.returnPressed.connect(lambda : self.TopicEntered())
         self.compl_topic = QCompleter()
         self._Topic.setCompleter(self.compl_topic)
         self.compl_list = QStringListModel()
         self.compl_topic.setModel(self.compl_list)
+        #on _topic enter pressed
+        self._Topic.returnPressed.connect(lambda : self.TopicEntered())
+        #getting the topic names of each row
         for subject in subjects:
             topic = subject.split(",")[0]
             difflvl = subject.split(",")[1:-1]
             topiclvl[topic] = difflvl
             topics.append(topic)
+        #for auto fill
         self.compl_list.setStringList(topics)
-    #makes difficulty buttons and assigns shit
+
+    #makes difficulty buttons and populates it
     def makeDiffButtons(self):
         self.cbx_diff = QComboBox(self)
+        #populates the Dropdown box
         self.cbx_diff.addItem("7")
         self.cbx_diff.addItem("8")
         self.cbx_diff.addItem("9")
         self.cbx_diff.addItem("10")
         self.cbx_diff.addItem("11")
         self.cbx_diff.addItem("12")
+        #on a number clicked
         self.cbx_diff.activated[int].connect(lambda: self.PrbBtnClicked(int(self.cbx_diff.currentText())))
+
     #make the problems section
     def makeProblem(self):
+        #init Ui Elements
         self.lbl_Problem = QLabel(self)
+        self.lbl_answer = QLabel("Answer:", self)
+        self.imgProblem = QLabel(self)
+        self._answer = QLineEdit()
+        #Cosmetic effects to Elements
         self.lbl_Problem.setText("This will be the problem")
         self.lbl_Problem.setStyleSheet("background-color: #E6E6E6; border: 1px inset grey;")
         self.lbl_Problem.setWordWrap(True)
         self.lbl_Problem.setAlignment(Qt.AlignTop)
         self.lbl_Problem.setMaximumSize(200,100)
-        self.imgProblem = QLabel(self)
-        #self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/pythag1.png"))
         self.imgProblem.setScaledContents(True)
         self.imgProblem.setMaximumSize(300,300)
-        self.lbl_answer = QLabel("Answer:", self)
         self.lbl_answer.setAlignment(Qt.AlignBottom)
-        self._answer = QLineEdit()
+        #on _Answer Enter pressed
         self._answer.returnPressed.connect(lambda : self.btncheck())
         self._answer.EchoMode(QLineEdit.Normal)
-    #make bottom
+
+    #make bottom of problem page
     def makeBottom(self):
+        #init Ui Elements
         self.btnCheck = QPushButton("Check Answer", self)
         self.btnNextPrb = QPushButton("Next Question", self)
         self.btnExit = QPushButton("Exit", self)
+        #cosmetic effects to UI Elements
         self.btnCheck.setMinimumHeight(40)
         self.btnNextPrb.setMinimumHeight(40)
         self.btnExit.setMinimumHeight(40)
+        #on button clicked
         self.btnCheck.clicked.connect(lambda: self.btncheck())
         self.btnNextPrb.clicked.connect(lambda: self.btnNextQuestion())
         self.btnExit.clicked.connect(lambda: self.toMenu())
-    #check if answer is right
-    def btncheck(self):
-        try:
-            if int(self._answer.text()) == int(questions[self.Qcounter][2]):
-                self._answer.setText("RIGHT WOOOO, dare try another?")
-            else:
-                self._answer.setText("WRONGGG")
-        except:
-            self._answer.setText("BOIIII put numbers in here")
+
+
     #the Layout of the Program
     def LayoutofP(self):
         # add on screen items
@@ -172,10 +187,26 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.btnCheck,4,0)
         self.layout.addWidget(self.btnNextPrb,4,1)
         self.layout.addWidget(self.btnExit,4,5)
-    """ functions for this to work """
-    # making the question look good"
+
+    """ functions not do do with UI """
+
+    """" MIGHT HAVE TO MAKE CHANGES SO THAT YOU CAN HAVE PRONUMERALS AS ANSWERS"""
+    #on Answer button clicked, Check answer
+    def btncheck(self):
+        try:
+            #if answer entered == Answer in file
+            if int(self._answer.text()) == int(questions[self.Qcounter][2]):
+                self._answer.setText("RIGHT WOOOO, dare try another?")
+            else:
+                self._answer.setText("WRONGGG")
+        #answer not numbers?
+        except:
+            self._answer.setText("BOIIII put numbers in here")
+
+    # Forming the question on the screen
     def formQuestion(self, file):
         counter = 0
+        #getting the Question
         for question in file:
             statement =  question.split(",")[0]
             Qquestion = question.split(",")[1]
@@ -186,50 +217,64 @@ class MainWindow(QMainWindow):
             Both.append(img)
             questions[counter] = Both
             counter += 1
+        #Making the Question pretty with the ablitiy to have math notation
         html_code = """\
                     {HTStatement}
                     """.format(HTStatement=questions[self.Qcounter][0])
         self.lbl_Problem.setText(html_code)
+        #is there a picture for this problem?
         if questions[self.Qcounter][2] != "null":
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][2]))
         else:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
+
     #when a difficulty button is clicked
     def PrbBtnClicked(self, inte):
         try:
             self.Qcounter = 0
+            #open a file with from that topic with the topic difficulty
             self.Topic_File = open(os.getcwd() + "/Topics/%s_%r.txt" % (str(self._Topic.text().lower()), inte), "r")
             self.fileR = self.Topic_File.read()
             self.questionRows = self.fileR.split("\n")
             self.formQuestion(self.questionRows)
+        #cant find s file with that difficulty
         except:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
             self.lbl_Problem.setText("That Topic in that Difficulty does not exit. maybe try another?")
-    #when the topic is entered
+
+    #If Topic is entered manually without autocompletion
     def TopicEntered(self):
+        #make text lowercase so its easier for people to enter topic name
         if self._Topic.text().lower() in topics:
             self.lbl_Problem.setText("%s" % self._Topic.text().lower())
             self.Qcounter = 0
+        #cant find topic
         else:
             self.lbl_Problem.setText("%s does not exist or is spelt wrong" % self._Topic.text().lower())
+
     #when next question button is clicked
     def btnNextQuestion(self):
         try:
             self.Qcounter += 1
+            #set new question on screen
             html_code = """\
                         <h5>{HTStatement}</h5>
                         {HTQuestion}
                         """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
             self.lbl_Problem.setText(html_code)
             self._answer.setText("")
+            #image to acompany this Question?
             if questions[self.Qcounter][3] != "null":
                 self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][3]))
             else:
                 self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
+        #cant find anymore Questions
         except:
             self.lbl_Problem.setText("uh oh there seems to be no more Questions. or something went wrong!")
+
     #back to main screen
     def toMenu(self):
+        global ex
         ex = menui.StartMenu()
         ex.show()
         self.close()
