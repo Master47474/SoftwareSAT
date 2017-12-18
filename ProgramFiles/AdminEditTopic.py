@@ -213,9 +213,11 @@ class MainWindow(QMainWindow):
         File.close()
         self.toMenu()
 
-    #abou to delete a folder when confirming
+    #shows pop up msg notifying user of potential deltion of file
     def ConfirmDel(self, *diffs):
+        #make diffs into a list
         diffs = list(diffs)
+        #are there even any diffs?
         if len(diffs) >= 1:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
@@ -237,11 +239,13 @@ class MainWindow(QMainWindow):
             msg.buttonClicked.connect(self.confbtn)
             self.retval = msg.exec_()
 
+    #once a button is clicked
     def confbtn(self,i):
-        #SubjectsDic = self.Splittting()
+        #was it the ok button?
         if i.text() == "OK":
             folder = "%s\Topics" %os.getcwd()
             cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
+            #loop through and delete al files that need to be delted
             for num in range(0,len(cbx)):
                 if cbx[num].isChecked():
                     pass
@@ -250,7 +254,7 @@ class MainWindow(QMainWindow):
                         for filename in filenames:
                             if filename == "%s_%d.txt" % (str(self.TopicName), int(SubjectsDic[str(self.TopicName)][1][num])):
                                 os.remove(os.path.join(folder, filename))
-                                print "remove"
+                    #remember to set it back to 0
                     SubjectsDic[str(self.TopicName)][1][num] = 0
 
 
@@ -317,8 +321,7 @@ class MainWindow(QMainWindow):
                 counter += 1
             File.close()
             self.toMenu()
-        else:
-            print "Button pressed is:", i.text()
+
 
     #To the Main Admin Menu
     def toMenu(self):
