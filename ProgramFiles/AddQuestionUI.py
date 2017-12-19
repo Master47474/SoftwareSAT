@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
         self.btn_Problem = QPushButton("Notation")
         self.btnBrowse = QPushButton("Browse")
         self.btnCnlimage = QPushButton("No Image")
+        self.lbl_Error = QLabel("",self)
         #Cosmetic effects for Ui
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
@@ -102,6 +103,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_TopicN,0,0,1,7)
         self.layout.addWidget(self.lbl_Diff,1,0)
         self.layout.addWidget(self.cbx_diff,1,1)
+        self.layout.addWidget(self.lbl_Error,1,5,1,2)
         self.layout.addWidget(self.lbl_prb,2,0)
         self.layout.addWidget(self._Problem,2,1,1,4)
         self.layout.addWidget(self.btn_Problem,2,6)
@@ -116,16 +118,11 @@ class MainWindow(QMainWindow):
     def singleBrowse(self):
          filepath = QFileDialog.getOpenFileName(self, 'Single File')
          list(filepath)
-         try:
-             if str(filepath[0]) != "":
-                 self.ImageForQ = []
-                 self.ImageForQ.append(str(filepath[0]))
-                 self.ImageForQ.append(str(filepath[0].split("/")[-1]))
-                 print self.ImageForQ
-             else:
-                print "chjoose something"
-         except:
-            print "failed"
+         if str(filepath[0]) != "":
+             self.ImageForQ = []
+             self.ImageForQ.append(str(filepath[0]))
+             self.ImageForQ.append(str(filepath[0].split("/")[-1]))
+
 
     #restet image variable
     def resetImag(self):
@@ -146,29 +143,36 @@ class MainWindow(QMainWindow):
         prob = True
         ans = True
         if len(problem) == 0 or len(answer) == 0 or problem == " " or answer == " ":
-            pass
+            self.lbl_Error.setText("enter a valid problem or Answer")
         else:
             prev = " "
             for num in problem:
                 if num == prev and num == " ":
-                    print "enter a valid problem"
+                    self.lbl_Error.setText("enter a valid problem")
                     prob = False
                 prev = num
             prev = " "
             for num in answer:
                 if num == prev and num == " ":
-                    print "enter a valid answer"
+                    self.lbl_Error.setText("enter a valid answer")
                     ans = False
                 prev = num
-            # if all tests are passed
-            if prob and ans == True:
-                diffs = map(int, SubjectsDic[self.TopicName][1])
-                #the Line to be written to the file
-                if str(self.ImageForQ[1]) != "":
+            #the Line to be written to the file
+            if str(self.ImageForQ[1]) != "":
+                #is the file a supported img file?
+                if str(self.ImageForQ[1])[-4:] == ".png" or str(self.ImageForQ[1])[-5:] == ".jpeg":
                     line = [problem, answer, str(self.ImageForQ[1])]
                     sht.copy(str(self.ImageForQ[0]), folder1)
                 else:
-                    line = [problem, answer, "null"]
+                    #set any to false to make satement false
+                    ans = False
+                    self.lbl_Error.setText("Not a supported img file")
+            else:
+                line = [problem, answer, "null"]
+            # if all tests are passed
+            if prob and ans == True:
+                diffs = map(int, SubjectsDic[self.TopicName][1])
+
                 #is difficulty supported by topic?
                 Found = False
                 if diff in diffs:

@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         #init Variables
         self.Qcounter = 0
+        self.questions = {}
         self.initUI()
 
     def initUI(self):
@@ -149,6 +150,7 @@ class MainWindow(QMainWindow):
         self.lbl_Problem.setStyleSheet("background-color: #E6E6E6; border: 1px inset grey;")
         self.lbl_Problem.setWordWrap(True)
         self.lbl_Problem.setAlignment(Qt.AlignTop)
+        self.lbl_Problem.setAlignment(Qt.AlignLeft)
         self.lbl_Problem.setMaximumSize(200,100)
         self.imgProblem.setScaledContents(True)
         self.imgProblem.setMaximumSize(300,300)
@@ -195,7 +197,7 @@ class MainWindow(QMainWindow):
     def btncheck(self):
         try:
             #if answer entered == Answer in file
-            if int(self._answer.text()) == int(questions[self.Qcounter][2]):
+            if int(self._answer.text()) == int(self.questions[self.Qcounter][2]):
                 self._answer.setText("RIGHT WOOOO, dare try another?")
             else:
                 self._answer.setText("WRONGGG")
@@ -205,6 +207,7 @@ class MainWindow(QMainWindow):
 
     # Forming the question on the screen
     def formQuestion(self, file):
+        self.questions = {}
         counter = 0
         #getting the Question
         for question in file:
@@ -215,16 +218,14 @@ class MainWindow(QMainWindow):
             Both.append(statement)
             Both.append(Qquestion)
             Both.append(img)
-            questions[counter] = Both
+            self.questions[counter] = Both
             counter += 1
         #Making the Question pretty with the ablitiy to have math notation
-        html_code = """\
-                    {HTStatement}
-                    """.format(HTStatement=questions[self.Qcounter][0])
+        html_code = """{HTStatement}""".format(HTStatement=self.questions[self.Qcounter][0])
         self.lbl_Problem.setText(html_code)
         #is there a picture for this problem?
-        if questions[self.Qcounter][2] != "null":
-            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % questions[self.Qcounter][2]))
+        if self.questions[self.Qcounter][2] != "null":
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % self.questions[self.Qcounter][2]))
         else:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
 
@@ -257,15 +258,11 @@ class MainWindow(QMainWindow):
         try:
             self.Qcounter += 1
             #set new question on screen
-            html_code = """\
-                        <h5>{HTStatement}</h5>
-                        {HTQuestion}
-                        """.format(HTStatement=questions[self.Qcounter][0],HTQuestion=questions[self.Qcounter][1])
+            html_code = """{HTStatement}""".format(HTStatement=self.questions[self.Qcounter][0])
             self.lbl_Problem.setText(html_code)
-            self._answer.setText("")
-            #image to acompany this Question?
-            if questions[self.Qcounter][3] != "null":
-                self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][3]))
+            #is there a picture for this problem?
+            if self.questions[self.Qcounter][2] != "null":
+                self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % self.questions[self.Qcounter][2]))
             else:
                 self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
         #cant find anymore Questions
