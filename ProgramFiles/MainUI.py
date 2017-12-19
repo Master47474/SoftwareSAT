@@ -224,7 +224,7 @@ class MainWindow(QMainWindow):
         self.lbl_Problem.setText(html_code)
         #is there a picture for this problem?
         if questions[self.Qcounter][2] != "null":
-            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "%s" % questions[self.Qcounter][2]))
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % questions[self.Qcounter][2]))
         else:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
 

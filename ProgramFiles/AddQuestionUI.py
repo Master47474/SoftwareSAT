@@ -140,6 +140,8 @@ class MainWindow(QMainWindow):
 
     #submit the information
     def submit(self, diff, problem, answer):
+        folder = "%s\Topics" % os.getcwd()
+        folder1 = "%s\Pictures" % os.getcwd()
         #testing to see if any fields are left blank
         prob = True
         ans = True
@@ -151,58 +153,59 @@ class MainWindow(QMainWindow):
                 if num == prev and num == " ":
                     print "enter a valid problem"
                     prob = False
+                prev = num
             prev = " "
             for num in answer:
                 if num == prev and num == " ":
                     print "enter a valid answer"
                     ans = False
+                prev = num
             # if all tests are passed
             if prob and ans == True:
-                folder = "%s\Topics" % os.getcwd()
                 diffs = map(int, SubjectsDic[self.TopicName][1])
                 #the Line to be written to the file
-                print self.ImageForQ
                 if str(self.ImageForQ[1]) != "":
                     line = [problem, answer, str(self.ImageForQ[1])]
+                    sht.copy(str(self.ImageForQ[0]), folder1)
                 else:
                     line = [problem, answer, "null"]
                 #is difficulty supported by topic?
+                Found = False
                 if diff in diffs:
                     for root, dirs, filenames in os.walk(folder):
                         for filename in filenames:
                             #does a file already exist with that difficulty?
                             if filename == "%s_%d.txt" % (self.TopicName, diff):
-                                #read it
-                                linebline = []
-                                File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
-                                FileR = File.read()
-                                Questions = FileR.split("\n")
-                                for question in Questions:
-                                    linebline.append(question.split(","))
-                                File.close()
-                                linebline.append(line)
-                                print linebline
-                                #Write to it
-                                File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'a+')
-                                for _ in range(0,len(linebline)):
-                                    if _ != len(linebline) - 1:
-                                        File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                                    else:
-                                        File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                            #one does not exist
-                            else:
-                                #create it and write to it
-                                linebline = []
-                                linebline.append(line)
-                                print linebline
-                                File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w+')
-                                for _ in range(0,len(linebline)):
-                                    if _ != len(linebline) - 1:
-                                        File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                                    else:
-                                        File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-
-                    self.toMenu()
+                                Found = True
+                if Found == True:
+                    #read it
+                    linebline = []
+                    File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
+                    FileR = File.read()
+                    Questions = FileR.split("\n")
+                    for question in Questions:
+                        linebline.append(question.split(","))
+                    File.close()
+                    linebline.append(line)
+                    #Write to it
+                    File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
+                    for _ in range(0,len(linebline)):
+                        if _ != len(linebline) - 1:
+                            File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                        else:
+                            File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                #one does not exist
+                else:
+                    #create it and write to it
+                    linebline = []
+                    linebline.append(line)
+                    File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w+')
+                    for _ in range(0,len(linebline)):
+                        if _ != len(linebline) - 1:
+                            File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                        else:
+                            File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                self.toMenu()
 
     #Not yet working but must make a pop up with a "calculator for scientific notation"
     def notation(self):
