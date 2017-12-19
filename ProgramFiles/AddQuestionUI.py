@@ -10,6 +10,7 @@ import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+import shutil as sht
 
 
 #File Imports
@@ -36,6 +37,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         #Init Vars
         self.TopicName = Topicname
+        self.ImageForQ = ["",""]
         self.initUI()
 
     #init UI
@@ -74,6 +76,8 @@ class MainWindow(QMainWindow):
         self.btn_Submit = QPushButton("Submit", self)
         self.btn_Exit = QPushButton("Exit", self)
         self.btn_Problem = QPushButton("Notation")
+        self.btnBrowse = QPushButton("Browse")
+        self.btnCnlimage = QPushButton("No Image")
         #Cosmetic effects for Ui
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
@@ -86,6 +90,8 @@ class MainWindow(QMainWindow):
         self.cbx_diff.addItem("11")
         self.cbx_diff.addItem("12")
         #on button clicked
+        self.btnBrowse.clicked.connect(lambda: self.singleBrowse())
+        self.btnCnlimage.clicked.connect(lambda: self.resetImag())
         self.btn_Submit.clicked.connect(lambda: self.submit(int(self.cbx_diff.currentText()), str(self._Problem.toPlainText()), str(self._Answer.text())))
         self.btn_Exit.clicked.connect(lambda: self.toMenu())
         self.btn_Problem.clicked.connect(lambda: self.notation())
@@ -101,8 +107,29 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.btn_Problem,2,6)
         self.layout.addWidget(self.lbl_Answer,3,0)
         self.layout.addWidget(self._Answer,3,1,1,4)
+        self.layout.addWidget(self.btnBrowse,3,5)
+        self.layout.addWidget(self.btnCnlimage,3,6)
         self.layout.addWidget(self.btn_Submit,4,4)
         self.layout.addWidget(self.btn_Exit,4,6)
+
+    #making the browse button
+    def singleBrowse(self):
+         filepath = QFileDialog.getOpenFileName(self, 'Single File')
+         list(filepath)
+         try:
+             if str(filepath[0]) != "":
+                 self.ImageForQ = []
+                 self.ImageForQ.append(str(filepath[0]))
+                 self.ImageForQ.append(str(filepath[0].split("/")[-1]))
+                 print self.ImageForQ
+             else:
+                print "chjoose something"
+         except:
+            print "failed"
+
+    #restet image variable
+    def resetImag(self):
+        self.ImageForQ = ["",""]
 
     #to the Main Admin Screen
     def toMenu(self):
@@ -134,7 +161,11 @@ class MainWindow(QMainWindow):
                 folder = "%s\Topics" % os.getcwd()
                 diffs = map(int, SubjectsDic[self.TopicName][1])
                 #the Line to be written to the file
-                line = [problem, answer, "null"]
+                print self.ImageForQ
+                if str(self.ImageForQ[1]) != "":
+                    line = [problem, answer, str(self.ImageForQ[1])]
+                else:
+                    line = [problem, answer, "null"]
                 #is difficulty supported by topic?
                 if diff in diffs:
                     for root, dirs, filenames in os.walk(folder):
@@ -150,8 +181,9 @@ class MainWindow(QMainWindow):
                                     linebline.append(question.split(","))
                                 File.close()
                                 linebline.append(line)
+                                print linebline
                                 #Write to it
-                                File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
+                                File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'a+')
                                 for _ in range(0,len(linebline)):
                                     if _ != len(linebline) - 1:
                                         File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
@@ -162,6 +194,7 @@ class MainWindow(QMainWindow):
                                 #create it and write to it
                                 linebline = []
                                 linebline.append(line)
+                                print linebline
                                 File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w+')
                                 for _ in range(0,len(linebline)):
                                     if _ != len(linebline) - 1:
