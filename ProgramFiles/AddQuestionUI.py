@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
         #Init Vars
         self.TopicName = Topicname
         self.ImageForQ = ["",""]
+        self.NotationOn = False
         self.initUI()
 
     #init UI
@@ -79,6 +80,13 @@ class MainWindow(QMainWindow):
         self.btnBrowse = QPushButton("Browse")
         self.btnCnlimage = QPushButton("No Image")
         self.lbl_Error = QLabel("",self)
+        self.cbxGroup = QButtonGroup(self)
+        self.chb_diff1 = QRadioButton("Problem",self)
+        self.chb_diff2 = QRadioButton("Answer",self)
+        self.chb_diff1.setChecked(True)
+        self.cbxGroup.addButton(self.chb_diff1,0)
+        self.cbxGroup.addButton(self.chb_diff2,1)
+
         #Cosmetic effects for Ui
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
@@ -99,6 +107,7 @@ class MainWindow(QMainWindow):
 
     # layout os program
     def LayoutofP(self):
+        global layout
         self.layout = QGridLayout()
         self.layout.addWidget(self.lbl_TopicN,0,0,1,7)
         self.layout.addWidget(self.lbl_Diff,1,0)
@@ -106,11 +115,13 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_Error,1,5,1,2)
         self.layout.addWidget(self.lbl_prb,2,0)
         self.layout.addWidget(self._Problem,2,1,1,4)
-        self.layout.addWidget(self.btn_Problem,2,6)
         self.layout.addWidget(self.lbl_Answer,3,0)
         self.layout.addWidget(self._Answer,3,1,1,4)
         self.layout.addWidget(self.btnBrowse,3,5)
         self.layout.addWidget(self.btnCnlimage,3,6)
+        self.layout.addWidget(self.chb_diff1,4,1)
+        self.layout.addWidget(self.chb_diff2,4,2)
+        self.layout.addWidget(self.btn_Problem,4,3)
         self.layout.addWidget(self.btn_Submit,4,4)
         self.layout.addWidget(self.btn_Exit,4,6)
 
@@ -122,7 +133,6 @@ class MainWindow(QMainWindow):
              self.ImageForQ = []
              self.ImageForQ.append(str(filepath[0]))
              self.ImageForQ.append(str(filepath[0].split("/")[-1]))
-
 
     #restet image variable
     def resetImag(self):
@@ -213,4 +223,26 @@ class MainWindow(QMainWindow):
 
     #Not yet working but must make a pop up with a "calculator for scientific notation"
     def notation(self):
-        print "notation"
+        if self.NotationOn == False:
+            self.NotationOn = True
+            #constructing the widget
+            self.btnSquared = QPushButton("Square", self)
+            #on clicked
+            self.btnSquared.clicked.connect(lambda: self.Squared())
+            #add to layout
+            self.layout.addWidget(self.btnSquared,5,3)
+        else:
+            self.NotationOn = False
+            self.layout.removeWidget(self.btnSquared)
+            self.btnSquared.deleteLater()
+            self.btnSquared = None
+
+
+
+
+    def Squared(self):
+        if self.chb_diff1.isChecked():
+            print "Problem"
+        else:
+            print "answer"
+        print "Square"
