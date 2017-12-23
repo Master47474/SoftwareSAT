@@ -11,7 +11,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import shutil as sht
-
+import re
+import string
 
 #File Imports
 import MainAdminUI as maui
@@ -147,102 +148,144 @@ class MainWindow(QMainWindow):
 
     #submit the information
     def submit(self, diff, problem, answer):
-        folder = "%s\Topics" % os.getcwd()
-        folder1 = "%s\Pictures" % os.getcwd()
-        #testing to see if any fields are left blank
-        prob = True
-        ans = True
-        if len(problem) == 0 or len(answer) == 0 or problem == " " or answer == " ":
-            self.lbl_Error.setText("enter a valid problem or Answer")
-        else:
-            prev = " "
-            for num in problem:
-                if num == prev and num == " ":
-                    self.lbl_Error.setText("enter a valid problem")
-                    prob = False
-                prev = num
-            prev = " "
-            for num in answer:
-                if num == prev and num == " ":
-                    self.lbl_Error.setText("enter a valid answer")
-                    ans = False
-                prev = num
-            #the Line to be written to the file
-            if str(self.ImageForQ[1]) != "":
-                #is the file a supported img file?
-                if str(self.ImageForQ[1])[-4:] == ".png" or str(self.ImageForQ[1])[-5:] == ".jpeg":
-                    line = [problem, answer, str(self.ImageForQ[1])]
-                    sht.copy(str(self.ImageForQ[0]), folder1)
-                else:
-                    #set any to false to make satement false
-                    ans = False
-                    self.lbl_Error.setText("Not a supported img file")
+        diffs = map(int, SubjectsDic[self.TopicName][1])
+        if diff in diffs:
+            folder = "%s\Topics" % os.getcwd()
+            folder1 = "%s\Pictures" % os.getcwd()
+            #testing to see if any fields are left blank
+            prob = True
+            ans = True
+            if len(problem) == 0 or len(answer) == 0 or problem == " " or answer == " ":
+                self.lbl_Error.setText("enter a valid problem or Answer")
             else:
-                line = [problem, answer, "null"]
-            # if all tests are passed
-            if prob and ans == True:
-                diffs = map(int, SubjectsDic[self.TopicName][1])
-
-                #is difficulty supported by topic?
-                Found = False
-                if diff in diffs:
-                    for root, dirs, filenames in os.walk(folder):
-                        for filename in filenames:
-                            #does a file already exist with that difficulty?
-                            if filename == "%s_%d.txt" % (self.TopicName, diff):
-                                Found = True
-                if Found == True:
-                    #read it
-                    linebline = []
-                    File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
-                    FileR = File.read()
-                    Questions = FileR.split("\n")
-                    for question in Questions:
-                        linebline.append(question.split(","))
-                    File.close()
-                    linebline.append(line)
-                    #Write to it
-                    File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
-                    for _ in range(0,len(linebline)):
-                        if _ != len(linebline) - 1:
-                            File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                        else:
-                            File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                #one does not exist
+                self.RootError = False
+                #was there a root?
+                self.FindRoot(problem, answer)
+                problem = self.Rootproblem
+                answer = self.Rootanswer
+                prev = " "
+                for num in problem:
+                    if num == prev and num == " ":
+                        self.lbl_Error.setText("enter a valid problem")
+                        prob = False
+                    prev = num
+                prev = " "
+                for num in answer:
+                    if num == prev and num == " ":
+                        self.lbl_Error.setText("enter a valid answer")
+                        ans = False
+                    prev = num
+                #the Line to be written to the file
+                if str(self.ImageForQ[1]) != "":
+                    #is the file a supported img file?
+                    if str(self.ImageForQ[1])[-4:] == ".png" or str(self.ImageForQ[1])[-5:] == ".jpeg":
+                        line = [problem, answer, str(self.ImageForQ[1])]
+                        sht.copy(str(self.ImageForQ[0]), folder1)
+                    else:
+                        #set any to false to make satement false
+                        ans = False
+                        self.lbl_Error.setText("Not a supported img file")
                 else:
-                    #create it and write to it
-                    linebline = []
-                    linebline.append(line)
-                    File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w+')
-                    for _ in range(0,len(linebline)):
-                        if _ != len(linebline) - 1:
-                            File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                        else:
-                            File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                self.toMenu()
+                    line = [problem, answer, "null"]
+                # if all tests are passed
+                if (prob and ans == True) and self.RootError == False:
+                    #is difficulty supported by topic?
+                    Found = False
+                    if diff in diffs:
+                        for root, dirs, filenames in os.walk(folder):
+                            for filename in filenames:
+                                #does a file already exist with that difficulty?
+                                if filename == "%s_%d.txt" % (self.TopicName, diff):
+                                    Found = True
+                    if Found == True:
+                        #read it
+                        linebline = []
+                        File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
+                        FileR = File.read()
+                        Questions = FileR.split("\n")
+                        for question in Questions:
+                            linebline.append(question.split(","))
+                        File.close()
+                        linebline.append(line)
+                        #Write to it
+                        File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
+                        for _ in range(0,len(linebline)):
+                            if _ != len(linebline) - 1:
+                                File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                            else:
+                                File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                    #one does not exist
+                    else:
+                        #create it and write to it
+                        linebline = []
+                        linebline.append(line)
+                        File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w+')
+                        for _ in range(0,len(linebline)):
+                            if _ != len(linebline) - 1:
+                                File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                            else:
+                                File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                    self.toMenu()
+        else:
+            self.lbl_Error.setText("not a supported Diff")
 
-    #Not yet working but must make a pop up with a "calculator for scientific notation"
+
+    #Expands the window to include scientific notation
     def notation(self):
         if self.NotationOn == False:
             self.NotationOn = True
             #constructing the widget
-            self.btnSquared = QPushButton("Square", self)
+            self.btnSquared = QPushButton("Squared", self)
+            self.btnRooted = QPushButton("Root", self)
             #on clicked
             self.btnSquared.clicked.connect(lambda: self.Squared())
+            self.btnRooted.clicked.connect(lambda: self.Rooted())
             #add to layout
             self.layout.addWidget(self.btnSquared,5,3)
+            self.layout.addWidget(self.btnRooted,6,3)
         else:
             self.NotationOn = False
             self.layout.removeWidget(self.btnSquared)
+            self.layout.removeWidget(self.btnRooted)
             self.btnSquared.deleteLater()
+            self.btnRooted.deleteLater()
             self.btnSquared = None
+            self.btnRooted = None
 
-
-
-
+    #on Squared button clicked
     def Squared(self):
         if self.chb_diff1.isChecked():
             print "Problem"
+            self._Problem.insertPlainText("<sup>2</sup>")
         else:
+            currentT = self._Answer.text()
+            self._Answer.setText("%s<sup>2</sup>" % currentT)
             print "answer"
-        print "Square"
+        print "Squared"
+
+    #when the Root Button Is Pressed
+    def Rooted(self):
+        if self.chb_diff1.isChecked():
+            print "Problem"
+            self._Problem.insertPlainText("@Root{}")
+        else:
+            currentT = self._Answer.text()
+            self._Answer.setText("%s@Root{}" % currentT)
+            print "answer"
+        print "Rooted"
+
+    def FindRoot(self, problem, answer):
+        #for problem
+        self.Rootproblem = problem
+        self.foundRoots = re.findall(r'@(Root{[^}]*})', str(self.Rootproblem))
+        for root in self.foundRoots:
+            root = root[5:-1]
+            rooted = "<span style='white-space: nowrap; font-size:larger'>&radic;<span style='text-decoration:overline;'>&nbsp;%s&nbsp;</span></span>" % root
+            self.Rootproblem = re.sub(r'@(Root{[^}]*})', rooted, self.Rootproblem, count=1, flags=0)
+
+        self.Rootanswer = answer
+        self.foundRoots = re.findall(r'@(Root{[^}]*})', str(self.Rootanswer))
+        for root in self.foundRoots:
+            root = root[5:-1]
+            rooted = "<span style='white-space: nowrap; font-size:larger'>&radic;<span style='text-decoration:overline;'>&nbsp;%s&nbsp;</span></span>" % root
+            self.Rootanswer = re.sub(r'@(Root{[^}]*})', rooted, self.Rootanswer, count=1, flags=0)

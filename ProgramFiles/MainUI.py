@@ -192,18 +192,14 @@ class MainWindow(QMainWindow):
 
     """ functions not do do with UI """
 
-    """" MIGHT HAVE TO MAKE CHANGES SO THAT YOU CAN HAVE PRONUMERALS AS ANSWERS"""
     #on Answer button clicked, Check answer
     def btncheck(self):
-        try:
-            #if answer entered == Answer in file
-            if int(self._answer.text()) == int(self.questions[self.Qcounter][2]):
-                self._answer.setText("RIGHT WOOOO, dare try another?")
-            else:
-                self._answer.setText("WRONGGG")
-        #answer not numbers?
-        except:
-            self._answer.setText("BOIIII put numbers in here")
+        #if answer entered == Answer in file
+        if self._answer.text() == self.questions[self.Qcounter][1]:
+            self._answer.setText("RIGHT WOOOO, dare try another?")
+        else:
+            self._answer.setText("WRONGGG")
+
 
     # Forming the question on the screen
     def formQuestion(self, file):
