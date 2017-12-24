@@ -9,6 +9,7 @@ import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+import re
 
 
 #File Imports
@@ -210,6 +211,13 @@ class MainWindow(QMainWindow):
             statement =  question.split(",")[0]
             Qquestion = question.split(",")[1]
             img = question.split(",")[2]
+            #translating text into html code to be able to show mathematical notaion
+            self.FindRoot(statement, Qquestion)
+            statement = self.Rootproblem
+            Qquestion = self.Rootanswer
+            self.FindPower(statement, Qquestion)
+            statement = self.PowerProblem
+            Qquestion = self.PowerAnswer
             Both = []
             Both.append(statement)
             Both.append(Qquestion)
@@ -271,3 +279,37 @@ class MainWindow(QMainWindow):
         ex = menui.StartMenu()
         ex.show()
         self.close()
+
+    #finding and translating the equation with roots into something readable
+    def FindRoot(self, problem, answer):
+        #for problem
+        self.Rootproblem = problem
+        self.foundRoots = re.findall(r'@(Root{[^}]*})', str(self.Rootproblem))
+        for root in self.foundRoots:
+            root = root[5:-1]
+            rooted = "<span style='white-space: nowrap; font-size:larger'>&radic;<span style='text-decoration:overline;'>&nbsp;%s&nbsp;</span></span>" % root
+            self.Rootproblem = re.sub(r'@(Root{[^}]*})', rooted, self.Rootproblem, count=1, flags=0)
+
+        self.Rootanswer = answer
+        self.foundRoots = re.findall(r'@(Root{[^}]*})', str(self.Rootanswer))
+        for root in self.foundRoots:
+            root = root[5:-1]
+            rooted = "<span style='white-space: nowrap; font-size:larger'>&radic;<span style='text-decoration:overline;'>&nbsp;%s&nbsp;</span></span>" % root
+            self.Rootanswer = re.sub(r'@(Root{[^}]*})', rooted, self.Rootanswer, count=1, flags=0)
+
+    # finding and translating an equation into soomethoing redabnle
+    def FindPower(self, problem, answer):
+        #for problem
+        self.PowerProblem = problem
+        self.foundPowers = re.findall(r'@(Power<[^>]*>)', str(self.PowerProblem))
+        for power in self.foundPowers:
+            power = power[6:-1]
+            powered = "<sup>%s</sup>" % power
+            self.PowerProblem = re.sub(r'@(Power<[^>]*>)', powered, self.PowerProblem, count=1, flags=0)
+
+        self.PowerAnswer = answer
+        self.foundPowers = re.findall(r'@(Power<[^>]*>)', str(self.PowerProblem))
+        for power in self.foundPowers:
+            power = power[6:-1]
+            powered = "<sup>%s</sup>" % power
+            self.PowerAnswer = re.sub(r'@(Power<[^>]*>)', powered, self.PowerAnswer, count=1, flags=0)

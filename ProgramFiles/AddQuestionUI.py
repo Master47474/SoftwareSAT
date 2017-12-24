@@ -158,11 +158,6 @@ class MainWindow(QMainWindow):
             if len(problem) == 0 or len(answer) == 0 or problem == " " or answer == " ":
                 self.lbl_Error.setText("enter a valid problem or Answer")
             else:
-                self.RootError = False
-                #was there a root?
-                self.FindRoot(problem, answer)
-                problem = self.Rootproblem
-                answer = self.Rootanswer
                 prev = " "
                 for num in problem:
                     if num == prev and num == " ":
@@ -188,7 +183,7 @@ class MainWindow(QMainWindow):
                 else:
                     line = [problem, answer, "null"]
                 # if all tests are passed
-                if (prob and ans == True) and self.RootError == False:
+                if prob and ans == True:
                     #is difficulty supported by topic?
                     Found = False
                     if diff in diffs:
@@ -235,7 +230,7 @@ class MainWindow(QMainWindow):
         if self.NotationOn == False:
             self.NotationOn = True
             #constructing the widget
-            self.btnSquared = QPushButton("Squared", self)
+            self.btnSquared = QPushButton("Power of", self)
             self.btnRooted = QPushButton("Root", self)
             #on clicked
             self.btnSquared.clicked.connect(lambda: self.Squared())
@@ -255,37 +250,15 @@ class MainWindow(QMainWindow):
     #on Squared button clicked
     def Squared(self):
         if self.chb_diff1.isChecked():
-            print "Problem"
-            self._Problem.insertPlainText("<sup>2</sup>")
+            self._Problem.insertPlainText("@Power<>")
         else:
             currentT = self._Answer.text()
-            self._Answer.setText("%s<sup>2</sup>" % currentT)
-            print "answer"
-        print "Squared"
+            self._Answer.setText("%s@Power<>" % currentT)
 
     #when the Root Button Is Pressed
     def Rooted(self):
         if self.chb_diff1.isChecked():
-            print "Problem"
             self._Problem.insertPlainText("@Root{}")
         else:
             currentT = self._Answer.text()
             self._Answer.setText("%s@Root{}" % currentT)
-            print "answer"
-        print "Rooted"
-
-    def FindRoot(self, problem, answer):
-        #for problem
-        self.Rootproblem = problem
-        self.foundRoots = re.findall(r'@(Root{[^}]*})', str(self.Rootproblem))
-        for root in self.foundRoots:
-            root = root[5:-1]
-            rooted = "<span style='white-space: nowrap; font-size:larger'>&radic;<span style='text-decoration:overline;'>&nbsp;%s&nbsp;</span></span>" % root
-            self.Rootproblem = re.sub(r'@(Root{[^}]*})', rooted, self.Rootproblem, count=1, flags=0)
-
-        self.Rootanswer = answer
-        self.foundRoots = re.findall(r'@(Root{[^}]*})', str(self.Rootanswer))
-        for root in self.foundRoots:
-            root = root[5:-1]
-            rooted = "<span style='white-space: nowrap; font-size:larger'>&radic;<span style='text-decoration:overline;'>&nbsp;%s&nbsp;</span></span>" % root
-            self.Rootanswer = re.sub(r'@(Root{[^}]*})', rooted, self.Rootanswer, count=1, flags=0)
