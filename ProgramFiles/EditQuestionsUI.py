@@ -78,33 +78,36 @@ class MainWindow(QMainWindow):
         self.btnApplyFilter = QPushButton("Apply Filter", self)
         self.lblQuestions = QLabel("Questions:")
         #make elemts for scroll box to work
-        self.ScrollArea = QScrollArea()
-        self.SAVertivalBox = QVBoxLayout()
-        self.QuestionRowLayout = QHBoxLayout()
-        self.layoutofQuestions()
+
+
+
+
+""" sota workighn """
+        self.ScrollArea = QScrollArea(self)
+        mygroupbox = QGroupBox("Groupy")
+        myform = QFormLayout()
+        labellist = []
+        combolist = []
+        for i in range(5):
+            labellist.append(QLabel('mylabel'))
+            combolist.append(QComboBox())
+            myform.addRow(labellist[i],combolist[i])
+        mygroupbox.setLayout(myform)
+        self.scroll = QScrollArea()
+        self.scroll.setWidget(mygroupbox)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setFixedHeight(400)
+
+
+
+
+
+
+
         #cosmetic effects fo Ui elements1
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
         self.lbl_TopicN.setFixedHeight(50)
-
-    #makes the layout of all the questions
-    def layoutofQuestions(self):
-        #set layouts for each area
-        self.ScrollArea.setLayout(self.SAVertivalBox)
-        self.rowLayout = QGridLayout()
-        for row in range(0,5):
-            for col in range(0,5):
-                diff = QLabel("%d" % row)
-                question = QLabel("1 + %d" % row + col)
-                answer = QLabel("%d" % col + row + 1)
-                edit = QPushButton("Edit", self)
-                Delete = QPushButton("delete", self)
-                self.rowLayout.addWidget(diff,row,col)
-                self.rowLayout.addWidget(question,row,col)
-                self.rowLayout.addWidget(answer,row,col)
-                self.rowLayout.addWidget(edit,row,col)
-                self.rowLayout.addWidget(Delete,row,col)
-
 
     #layout of Window
     def LayoutofP(self):
@@ -119,4 +122,4 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.chb_diff6,1,6)
         self.layout.addWidget(self.btnApplyFilter,2,6)
         self.layout.addWidget(self.lblQuestions,3,0)
-        self.layout.addWidget(self.ScrollArea,4,0,4,12)
+        self.layout.addWidget(self.scroll,4,0,4,12)
