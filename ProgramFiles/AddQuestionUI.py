@@ -230,6 +230,8 @@ class MainWindow(QMainWindow):
         if self.NotationOn == False:
             self.NotationOn = True
             #constructing the widget
+            # +30px per row, added
+            self.resize(400,360)
             self.btnSquared = QPushButton("Power of", self)
             self.btnRooted = QPushButton("Root", self)
             #on clicked
@@ -239,6 +241,7 @@ class MainWindow(QMainWindow):
             self.layout.addWidget(self.btnSquared,5,3)
             self.layout.addWidget(self.btnRooted,6,3)
         else:
+            self.resize(400,300)
             self.NotationOn = False
             self.layout.removeWidget(self.btnSquared)
             self.layout.removeWidget(self.btnRooted)

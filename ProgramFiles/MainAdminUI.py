@@ -16,6 +16,8 @@ from PyQt5.QtCore import *
 import MenuUI as menui
 import AdminEditTopic as ateui
 import AddQuestionUI as aqui
+import EditQuestionsUI as equi
+
 
 #variables
 #getting each row of the topics file
@@ -74,6 +76,8 @@ class MainAWindow(QMainWindow):
         self.btnExit.clicked.connect(lambda: self.toMenu())
         self.btn_EditT.clicked.connect(lambda: self.toEditTop())
         self.btn_AddQ.clicked.connect(lambda: self.toAddQ())
+        self.btn_EditQ.clicked.connect(lambda: self.toEditQ())
+
 
     #laysout the program
     def LayoutofP(self):
@@ -104,5 +108,12 @@ class MainAWindow(QMainWindow):
     def toAddQ(self):
         global ex
         ex = aqui.MainWindow(self.cbx_topics.currentText())
+        ex.show()
+        self.close()
+
+    #to the Edit Question Window
+    def toEditQ(self):
+        global ex
+        ex = equi.MainWindow(self.cbx_topics.currentText())
         ex.show()
         self.close()
