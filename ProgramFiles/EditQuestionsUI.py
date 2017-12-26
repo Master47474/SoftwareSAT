@@ -47,6 +47,8 @@ class MainWindow(QMainWindow):
         self.resize(400,300)
         #Created the Ui Elements
         self.createBtns()
+        #crete Questions list area
+        self.makeQuesitonlist()
         #layout of the program
         self.LayoutofP()
 
@@ -77,38 +79,33 @@ class MainWindow(QMainWindow):
             chb.setChecked(True)
         self.btnApplyFilter = QPushButton("Apply Filter", self)
         self.lblQuestions = QLabel("Questions:")
-        #make elemts for scroll box to work
-
-
-
-
-""" sota workighn """
-        self.ScrollArea = QScrollArea(self)
-        mygroupbox = QGroupBox("Groupy")
-        myform = QFormLayout()
-        labellist = []
-        combolist = []
-        for i in range(5):
-            labellist.append(QLabel('mylabel'))
-            combolist.append(QComboBox())
-            myform.addRow(labellist[i],combolist[i])
-        mygroupbox.setLayout(myform)
-        self.scroll = QScrollArea()
-        self.scroll.setWidget(mygroupbox)
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setFixedHeight(400)
-
-
-
-
-
-
-
         #cosmetic effects fo Ui elements1
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
         self.lbl_TopicN.setFixedHeight(50)
 
+
+    def makeQuesitonlist(self):
+        #make elemts for scroll box to work
+        mygroupbox = QGroupBox("Difficulty, Question, Answer")
+        myform = QFormLayout()
+        labellist = []
+        combolist = []
+        buttonlist = []
+        for i in range(5):
+            diff = i
+            text = "1 + %d" % i
+            answer = 1 + i
+            labellist.append(QLabel('%d, what is the soluction this %s, %d' % (diff, text,answer)))
+            combolist.append(QPushButton("Edit"))
+            buttonlist.append(QPushButton("Delete"))
+            hbox = QHBoxLayout()
+            hbox.addWidget(combolist[i])
+            hbox.addWidget(buttonlist[i])
+            myform.addRow(labellist[i],hbox)
+        mygroupbox.setLayout(myform)
+        self.scroll = QScrollArea()
+        self.scroll.setWidget(mygroupbox)
     #layout of Window
     def LayoutofP(self):
         self.layout = QGridLayout()
