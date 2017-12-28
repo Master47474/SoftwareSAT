@@ -39,8 +39,6 @@ class MainWindow(QMainWindow):
         self.resize(400,300)
         #Created the Ui Elements
         self.createBtns()
-        #crete Questions list area
-        self.makeQuesitonlist()
         #layout of the program
         self.LayoutofP()
 
@@ -75,54 +73,71 @@ class MainWindow(QMainWindow):
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
         self.lbl_TopicN.setFixedHeight(50)
+        #assign buttons
+        self.btnApplyFilter.clicked.connect(lambda: self.makeQuesitonlist())
+        #crete Questions list area
+        self.makeQuesitonlist()
 
 
     def makeQuesitonlist(self):
         #make elemts for scroll box to work
+        #was the filter changed?
+        try:
+            self.scroll.deleteLater()
+            self.scroll = QScrollArea()
+            self.layout.addWidget(self.scroll,4,0,4,12)
+        except:
+            self.scroll = QScrollArea()
+        #get the filters
+        self.filter = []
+        for cbh in self.chbList:
+            if cbh.isChecked() == True:
+                self.filter.append(int(cbh.text()))
+        #ui cosmetics
         mygroupbox = QGroupBox("Difficulty, Question, Answer")
         myform = QFormLayout()
-        labellist = []
-        combolist = []
-        buttonlist = []
+        files = []
         folder = "%s\Topics" % os.getcwd()
+        #are there any files for this topic?
         for root, dirs, filenames in os.walk(folder):
             for filename in filenames:
                 #does a file already exist with that difficulty?
                 if filename.startswith("%s" % self.TopicName):
                     Found = True
-                    print "nice"    
-        """
+                    files.append(filename)
+        #was at least one found?
         if Found == True:
-            #read it
-            linebline = []
-            File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
-            FileR = File.read()
-            Questions = FileR.split("\n")
-            for question in Questions:
-                linebline.append(question.split(","))
-            File.close()
-            linebline.append(line)
-            #Write to it
-            File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
-            for _ in range(0,len(linebline)):
-                if _ != len(linebline) - 1:
-                    File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                else:
-                    File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-        """
-        for i in range(5):
-            diff = i
-            text = "1 + %d" % i
-            answer = 1 + i
-            labellist.append(QLabel('%d, what is the soluction this %s, %d' % (diff, text,answer)))
-            combolist.append(QPushButton("Edit"))
-            buttonlist.append(QPushButton("Delete"))
-            hbox = QHBoxLayout()
-            hbox.addWidget(combolist[i])
-            hbox.addWidget(buttonlist[i])
-            myform.addRow(labellist[i],hbox)
+            #init the line no.
+            line = 1
+            for filename in files:
+                #read the file and get the questions
+                linebline = []
+                File = open("%s\%s" % (folder, filename),'r')
+                FileR = File.read()
+                Questions = FileR.split("\n")
+                #for each question, get the diff,text,answer and append and make it a row
+                for question in Questions:
+                    linebline.append(question.split(","))
+                    for _ in range(0,len(linebline)):
+                        try:
+                            diff = int(filename[11:13])
+                        except:
+                            diff = int(filename[11])
+                        if diff in self.filter:
+                            print self.filter
+                            print diff
+                            if len(linebline[_][0]) > 20:
+                                linebline[_][0] = "%s..." % linebline[_][0][0:20]
+                            if len(linebline[_][1]) > 15:
+                                linebline[_][1] = "%s..." % linebline[_][1][0:15]
+                            text = linebline[_][0]
+                            answer = linebline[_][1]
+                            hbox = QHBoxLayout()
+                            hbox.addWidget(QPushButton("Edit"))
+                            hbox.addWidget(QPushButton("Delete"))
+                            myform.addRow(QLabel('%d, %s, %s' % (diff,text,answer)),hbox)
+                            line += 1
         mygroupbox.setLayout(myform)
-        self.scroll = QScrollArea()
         self.scroll.setWidget(mygroupbox)
 
     #layout of Window

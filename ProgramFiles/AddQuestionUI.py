@@ -18,18 +18,7 @@ import string
 import MainAdminUI as maui
 
 #Variables
-File = open("Topics.txt",'r')
-FileR = File.read()
-subjects = FileR.split("\n")
-File.close()
 
-#a Dictionary of all the Topics
-SubjectsDic = {}
-for subject in subjects:
-    listt = []
-    topic = subject.split(",")[0]
-    topicDiff = subject.split(",")[1:]
-    SubjectsDic[topic] = topic,topicDiff
 
 
 class MainWindow(QMainWindow):
@@ -148,6 +137,17 @@ class MainWindow(QMainWindow):
 
     #submit the information
     def submit(self, diff, problem, answer):
+        File = open("Topics.txt",'r')
+        FileR = File.read()
+        subjects = FileR.split("\n")
+        File.close()
+        #a Dictionary of all the Topics
+        SubjectsDic = {}
+        for subject in subjects:
+            listt = []
+            topic = subject.split(",")[0]
+            topicDiff = subject.split(",")[1:]
+            SubjectsDic[topic] = topic,topicDiff
         diffs = map(int, SubjectsDic[self.TopicName][1])
         if diff in diffs:
             folder = "%s\Topics" % os.getcwd()
