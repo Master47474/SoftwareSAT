@@ -19,15 +19,7 @@ FileR = File.read()
 subjects = FileR.split("\n")
 File.close()
 
-#a Dictionary of all the Topics
-SubjectsDic = {}
-for subject in subjects:
-    listt = []
-    #the topic
-    topic = subject.split(",")[0]
-    #The Difficulites of the topic
-    topicDiff = subject.split(",")[1:]
-    SubjectsDic[topic] = topic,topicDiff
+
 
 
 class MainWindow(QMainWindow):
@@ -92,6 +84,32 @@ class MainWindow(QMainWindow):
         labellist = []
         combolist = []
         buttonlist = []
+        folder = "%s\Topics" % os.getcwd()
+        for root, dirs, filenames in os.walk(folder):
+            for filename in filenames:
+                #does a file already exist with that difficulty?
+                if filename.startswith("%s" % self.TopicName):
+                    Found = True
+                    print "nice"    
+        """
+        if Found == True:
+            #read it
+            linebline = []
+            File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
+            FileR = File.read()
+            Questions = FileR.split("\n")
+            for question in Questions:
+                linebline.append(question.split(","))
+            File.close()
+            linebline.append(line)
+            #Write to it
+            File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
+            for _ in range(0,len(linebline)):
+                if _ != len(linebline) - 1:
+                    File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                else:
+                    File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+        """
         for i in range(5):
             diff = i
             text = "1 + %d" % i
@@ -106,6 +124,7 @@ class MainWindow(QMainWindow):
         mygroupbox.setLayout(myform)
         self.scroll = QScrollArea()
         self.scroll.setWidget(mygroupbox)
+
     #layout of Window
     def LayoutofP(self):
         self.layout = QGridLayout()
