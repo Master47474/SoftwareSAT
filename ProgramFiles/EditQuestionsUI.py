@@ -66,7 +66,8 @@ class MainWindow(QMainWindow):
         self.chb_diff6 = QCheckBox("12",self)
         self.chbList = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
         for chb in self.chbList:
-            chb.setChecked(True)
+            if int(chb.text()) != 9:
+                chb.setChecked(True)
         self.btnApplyFilter = QPushButton("Apply Filter", self)
         self.lblQuestions = QLabel("Questions:")
         #cosmetic effects fo Ui elements1
@@ -109,6 +110,7 @@ class MainWindow(QMainWindow):
         if Found == True:
             #init the line no.
             line = 1
+            buttons = {}
             for filename in files:
                 #read the file and get the questions
                 linebline = []
@@ -124,8 +126,9 @@ class MainWindow(QMainWindow):
                         except:
                             diff = int(filename[11])
                         if diff in self.filter:
-                            print self.filter
-                            print diff
+                            btnEd = QPushButton("Edit")
+                            btnDel = QPushButton("Delete")
+                            btnEd.clicked.connect(lambda: self.EditBtnClicked(linebline[_][0]))
                             if len(linebline[_][0]) > 20:
                                 linebline[_][0] = "%s..." % linebline[_][0][0:20]
                             if len(linebline[_][1]) > 15:
@@ -133,12 +136,15 @@ class MainWindow(QMainWindow):
                             text = linebline[_][0]
                             answer = linebline[_][1]
                             hbox = QHBoxLayout()
-                            hbox.addWidget(QPushButton("Edit"))
-                            hbox.addWidget(QPushButton("Delete"))
+                            hbox.addWidget(btnEd)
+                            hbox.addWidget(btnDel)
                             myform.addRow(QLabel('%d, %s, %s' % (diff,text,answer)),hbox)
                             line += 1
         mygroupbox.setLayout(myform)
         self.scroll.setWidget(mygroupbox)
+
+    def EditBtnClicked(self, text):
+        print text
 
     #layout of Window
     def LayoutofP(self):
