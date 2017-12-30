@@ -1,1 +1,2 @@
 asf,asfasf,null
+(@Root{2})@Power<2>,2,null

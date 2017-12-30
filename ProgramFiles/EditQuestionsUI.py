@@ -95,8 +95,8 @@ class MainWindow(QMainWindow):
             if cbh.isChecked() == True:
                 self.filter.append(int(cbh.text()))
         #ui cosmetics
-        mygroupbox = QGroupBox("Difficulty, Question, Answer")
-        myform = QFormLayout()
+        mygroupbox = QGroupBox("Row, Difficulty, Question, Answer")
+        self.myform = QVBoxLayout()
         files = []
         folder = "%s\Topics" % os.getcwd()
         #are there any files for this topic?
@@ -106,45 +106,57 @@ class MainWindow(QMainWindow):
                 if filename.startswith("%s" % self.TopicName):
                     Found = True
                     files.append(filename)
+        self.FinalQuestions = []
+        self.FinalButtons = QButtonGroup()
+        self.FinalButtons.buttonClicked[QAbstractButton].connect(self.EditBtnClicked)
         #was at least one found?
         if Found == True:
             #init the line no.
             line = 1
             buttons = {}
             for filename in files:
-                #read the file and get the questions
-                linebline = []
-                File = open("%s\%s" % (folder, filename),'r')
-                FileR = File.read()
-                Questions = FileR.split("\n")
-                #for each question, get the diff,text,answer and append and make it a row
-                for question in Questions:
-                    linebline.append(question.split(","))
-                    for _ in range(0,len(linebline)):
-                        try:
-                            diff = int(filename[11:13])
-                        except:
-                            diff = int(filename[11])
-                        if diff in self.filter:
-                            btnEd = QPushButton("Edit")
-                            btnDel = QPushButton("Delete")
-                            btnEd.clicked.connect(lambda: self.EditBtnClicked(linebline[_][0]))
+                try:
+                    diff = int(filename[11:13])
+                except:
+                    diff = int(filename[11])
+                if diff in self.filter:
+                    #read the file and get the questions
+                    File = open("%s\%s" % (folder, filename),'r')
+                    FileR = File.read()
+                    Questions = FileR.split("\n")
+                    #for each question, get the diff,text,answer and append and make it a row
+                    lineOfFile = 1
+                    for question in Questions:
+                        linebline = []
+                        linebline.append(question.split(","))
+                        for _ in range(0,len(linebline)):
                             if len(linebline[_][0]) > 20:
                                 linebline[_][0] = "%s..." % linebline[_][0][0:20]
                             if len(linebline[_][1]) > 15:
                                 linebline[_][1] = "%s..." % linebline[_][1][0:15]
                             text = linebline[_][0]
                             answer = linebline[_][1]
-                            hbox = QHBoxLayout()
-                            hbox.addWidget(btnEd)
-                            hbox.addWidget(btnDel)
-                            myform.addRow(QLabel('%d, %s, %s' % (diff,text,answer)),hbox)
+                            list2apend = [line, '%s | %d, %s, %s  ' % (line,diff,text,answer), filename, lineOfFile]
+                            print linebline
+                            self.FinalQuestions.append(list2apend)
+                            #self.myform.addRow(QLabel('%d, %s, %s' % (diff,text,answer)),btnEd)
                             line += 1
-        mygroupbox.setLayout(myform)
+                        lineOfFile += 1
+            for line in range(0,line - 1):
+                btnEd = QPushButton("Edit Row %s" % self.FinalQuestions[line][0])
+                self.FinalButtons.addButton(btnEd)
+                hbox = QHBoxLayout()
+                hbox.addWidget(QLabel(self.FinalQuestions[line][1]))
+                hbox.addWidget(btnEd)
+                self.myform.addItem(hbox)
+        mygroupbox.setLayout(self.myform)
         self.scroll.setWidget(mygroupbox)
 
-    def EditBtnClicked(self, text):
-        print text
+    def EditBtnClicked(self, button):
+        print int(button.text()[8:])
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][1]
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][2]
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][3]
 
     #layout of Window
     def LayoutofP(self):
