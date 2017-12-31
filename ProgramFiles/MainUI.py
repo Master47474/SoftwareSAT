@@ -196,10 +196,13 @@ class MainWindow(QMainWindow):
     #on Answer button clicked, Check answer
     def btncheck(self):
         #if answer entered == Answer in file
-        if self._answer.text() == self.questions[self.Qcounter][1]:
-            self._answer.setText("RIGHT WOOOO, dare try another?")
-        else:
-            self._answer.setText("WRONGGG")
+        try:
+            if self._answer.text() == self.questions[self.Qcounter][1]:
+                self._answer.setText("RIGHT WOOOO, dare try another?")
+            else:
+                self._answer.setText("WRONGGG")
+        except:
+            pass
 
 
     # Forming the question on the screen
@@ -242,10 +245,12 @@ class MainWindow(QMainWindow):
             self.fileR = self.Topic_File.read()
             self.questionRows = self.fileR.split("\n")
             self.formQuestion(self.questionRows)
+            self.btnNextPrb.setEnabled(True)
         #cant find s file with that difficulty
         except:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
             self.lbl_Problem.setText("That Topic in that Difficulty does not exit. maybe try another?")
+            self.btnNextPrb.setEnabled(False)
 
     #If Topic is entered manually without autocompletion
     def TopicEntered(self):
@@ -269,9 +274,11 @@ class MainWindow(QMainWindow):
                 self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % self.questions[self.Qcounter][2]))
             else:
                 self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
+            self.btnNextPrb.setEnabled(True)
         #cant find anymore Questions
         except:
             self.lbl_Problem.setText("uh oh there seems to be no more Questions. or something went wrong!")
+            self.btnNextPrb.setEnabled(False)
 
     #back to main screen
     def toMenu(self):

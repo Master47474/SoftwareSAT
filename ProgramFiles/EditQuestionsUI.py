@@ -12,6 +12,7 @@ from PyQt5.QtCore import *
 
 #File Imports
 import MainAdminUI as maui
+import IndividualQuestionsUI as editQ
 
 #Variables
 File = open("Topics.txt",'r')
@@ -66,16 +67,17 @@ class MainWindow(QMainWindow):
         self.chb_diff6 = QCheckBox("12",self)
         self.chbList = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
         for chb in self.chbList:
-            if int(chb.text()) != 9:
-                chb.setChecked(True)
+            chb.setChecked(True)
         self.btnApplyFilter = QPushButton("Apply Filter", self)
         self.lblQuestions = QLabel("Questions:")
+        self.btn_Exit = QPushButton("Exit", self)
         #cosmetic effects fo Ui elements1
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
         self.lbl_TopicN.setStyleSheet("QLabel {background-color: grey;}")
         self.lbl_TopicN.setFixedHeight(50)
         #assign buttons
         self.btnApplyFilter.clicked.connect(lambda: self.makeQuesitonlist())
+        self.btn_Exit.clicked.connect(lambda: self.toMenu())
         #crete Questions list area
         self.makeQuesitonlist()
 
@@ -136,14 +138,14 @@ class MainWindow(QMainWindow):
                                 linebline[_][1] = "%s..." % linebline[_][1][0:15]
                             text = linebline[_][0]
                             answer = linebline[_][1]
-                            list2apend = [line, '%s | %d, %s, %s  ' % (line,diff,text,answer), filename, lineOfFile]
+                            list2apend = [line, '%s | %d, %s, %s  ' % (line,diff,text,answer), filename, lineOfFile, text, answer, linebline[_][2]]
                             print linebline
                             self.FinalQuestions.append(list2apend)
-                            #self.myform.addRow(QLabel('%d, %s, %s' % (diff,text,answer)),btnEd)
                             line += 1
                         lineOfFile += 1
             for line in range(0,line - 1):
                 btnEd = QPushButton("Edit Row %s" % self.FinalQuestions[line][0])
+                btnEd.setFixedWidth(125)
                 self.FinalButtons.addButton(btnEd)
                 hbox = QHBoxLayout()
                 hbox.addWidget(QLabel(self.FinalQuestions[line][1]))
@@ -152,11 +154,7 @@ class MainWindow(QMainWindow):
         mygroupbox.setLayout(self.myform)
         self.scroll.setWidget(mygroupbox)
 
-    def EditBtnClicked(self, button):
-        print int(button.text()[8:])
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][1]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][2]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][3]
+
 
     #layout of Window
     def LayoutofP(self):
@@ -172,3 +170,23 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.btnApplyFilter,2,6)
         self.layout.addWidget(self.lblQuestions,3,0)
         self.layout.addWidget(self.scroll,4,0,4,12)
+        self.layout.addWidget(self.btn_Exit,10,11)
+
+
+    def EditBtnClicked(self, button):
+        print int(button.text()[8:])
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][1]
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][2]
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][3]
+        print self.FinalQuestions[int(button.text()[8:]) -1 ][4]
+        global ex
+        """ set import """
+        ex = editQ.MainWindow()
+        ex.show()
+        self.close()
+    #to the Main Admin Screen
+    def toMenu(self):
+        global ex
+        ex = maui.MainAWindow()
+        ex.show()
+        self.close()
