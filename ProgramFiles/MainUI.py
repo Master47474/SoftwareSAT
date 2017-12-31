@@ -215,12 +215,12 @@ class MainWindow(QMainWindow):
             Qquestion = question.split(",")[1]
             img = question.split(",")[2]
             #translating text into html code to be able to show mathematical notaion
-            self.FindRoot(statement, Qquestion)
-            statement = self.Rootproblem
-            Qquestion = self.Rootanswer
             self.FindPower(statement, Qquestion)
             statement = self.PowerProblem
             Qquestion = self.PowerAnswer
+            self.FindRoot(statement, Qquestion)
+            statement = self.Rootproblem
+            Qquestion = self.Rootanswer
             Both = []
             Both.append(statement)
             Both.append(Qquestion)
