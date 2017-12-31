@@ -15,7 +15,7 @@ import re
 import string
 
 #File Imports
-import MainAdminUI as maui
+import EditQuestionsUI as equi
 
 #Variables
 
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         except:
             self.importedDiff = int(filename[11])
         self.importedFilename = filename
-        self.importedText = Problem
+        self.importedText = problem
         self.importedAnswer = answer
         self.importedLineInFile = lineInFile
         self.NotationOn = False
@@ -148,7 +148,7 @@ class MainWindow(QMainWindow):
     #to the Main Admin Screen
     def toMenu(self):
         global ex
-        ex = maui.MainAWindow()
+        ex = equi.MainWindow(self.TopicName)
         ex.show()
         self.close()
 
@@ -210,37 +210,31 @@ class MainWindow(QMainWindow):
                                 if filename == self.importedFilename:
                                     Found = True
                                     print "true"
-                    """
                     if Found == True:
                         #read it
                         linebline = []
-                        File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'r')
+                        File = open("%s\%s" % (folder,self.importedFilename),'r')
                         FileR = File.read()
                         Questions = FileR.split("\n")
+                        FileL = 1
                         for question in Questions:
-                            linebline.append(question.split(","))
+                            if FileL == self.importedLineInFile:
+                                linebline.append(line)
+                                print "appended to line"
+                            else:
+                                linebline.append(question.split(","))
+                            FileL += 1
                         File.close()
-                        linebline.append(line)
                         #Write to it
-                        File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w')
+                        File = open("%s\%s" % (folder,self.importedFilename),'w')
                         for _ in range(0,len(linebline)):
                             if _ != len(linebline) - 1:
                                 File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
                             else:
                                 File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                    #one does not exist
                     else:
-                        #create it and write to it
-                        linebline = []
-                        linebline.append(line)
-                        File = open("%s\%s_%d.txt" % (folder,self.TopicName, diff),'w+')
-                        for _ in range(0,len(linebline)):
-                            if _ != len(linebline) - 1:
-                                File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                            else:
-                                File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                        print "error"
                     self.toMenu()
-                    """
         else:
             self.lbl_Error.setText("not a supported Diff")
 

@@ -132,14 +132,15 @@ class MainWindow(QMainWindow):
                         linebline = []
                         linebline.append(question.split(","))
                         for _ in range(0,len(linebline)):
-                            if len(linebline[_][0]) > 20:
-                                linebline[_][0] = "%s..." % linebline[_][0][0:20]
+                            textT = linebline[_][0]
+                            answerT = linebline[_][1]
+                            if len(linebline[_][0]) > 15:
+                                linebline[_][0] = "%s..." % linebline[_][0][0:15]
                             if len(linebline[_][1]) > 15:
                                 linebline[_][1] = "%s..." % linebline[_][1][0:15]
                             text = linebline[_][0]
                             answer = linebline[_][1]
-                            list2apend = [line, '%s | %d, %s, %s  ' % (line,diff,text,answer), filename, lineOfFile, text, answer, linebline[_][2]]
-                            print linebline
+                            list2apend = [line, '%s | %d, %s, %s  ' % (line,diff,text,answer), filename, lineOfFile, textT, answerT, linebline[_][2]]
                             self.FinalQuestions.append(list2apend)
                             line += 1
                         lineOfFile += 1
@@ -181,7 +182,9 @@ class MainWindow(QMainWindow):
         print self.FinalQuestions[int(button.text()[8:]) -1 ][4]
         global ex
         """ set import """
-        ex = editQ.MainWindow()
+        ex = editQ.MainWindow(self.TopicName, self.FinalQuestions[int(button.text()[8:])-1][2], self.FinalQuestions[int(button.text()[8:])-1][4]\
+                                ,self.FinalQuestions[int(button.text()[8:])-1][5],\
+                                self.FinalQuestions[int(button.text()[8:])-1][3], self.FinalQuestions[int(button.text()[8:])-1][6])
         ex.show()
         self.close()
     #to the Main Admin Screen
