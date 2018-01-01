@@ -102,6 +102,7 @@ class MainWindow(QMainWindow):
         files = []
         folder = "%s\Topics" % os.getcwd()
         #are there any files for this topic?
+        Found = False
         for root, dirs, filenames in os.walk(folder):
             for filename in filenames:
                 #does a file already exist with that difficulty?
@@ -190,6 +191,6 @@ class MainWindow(QMainWindow):
     #to the Main Admin Screen
     def toMenu(self):
         global ex
-        ex = maui.MainAWindow()
+        ex = maui.MainAWindow(self.TopicName)
         ex.show()
         self.close()

@@ -75,8 +75,19 @@ class StartMenu(QMainWindow):
     #switching windows
     #to Admin Window
     def toAdmin(self):
+        topics = []
+        topiclvl = {}
+        questions = {}
+        File = open("Topics.txt",'r')
+        FileR = File.read()
+        subjects = FileR.split("\n")
+        for subject in subjects:
+            topic = subject.split(",")[0]
+            difflvl = subject.split(",")[1:-1]
+            topiclvl[topic] = difflvl
+            topics.append(topic)
         global ex
-        ex = maui.MainAWindow()
+        ex = maui.MainAWindow(topics[0])
         ex.show()
         self.close()
     #to Problem Window

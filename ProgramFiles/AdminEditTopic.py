@@ -325,6 +325,6 @@ class MainWindow(QMainWindow):
 
     #To the Main Admin Menu
     def toMenu(self):
-        ex = maui.MainAWindow()
+        ex = maui.MainAWindow(self.TopicName)
         ex.show()
         self.close()
