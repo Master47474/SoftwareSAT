@@ -16,6 +16,7 @@ import string
 
 #File Imports
 import EditQuestionsUI as equi
+import MainAdminUI as maui
 
 #Variables
 
@@ -82,6 +83,7 @@ class MainWindow(QMainWindow):
         self.btnCnlimage = QPushButton("No Image")
         self.lbl_Error = QLabel("",self)
         self.cbxGroup = QButtonGroup(self)
+        self.btn_delete = QPushButton("Delete Question", self)
         self.chb_diff1 = QRadioButton("Problem",self)
         self.chb_diff2 = QRadioButton("Answer",self)
         self.chb_diff1.setChecked(True)
@@ -111,6 +113,8 @@ class MainWindow(QMainWindow):
         self.btn_Submit.clicked.connect(lambda: self.submit(int(self.cbx_diff.currentText()), str(self._Problem.toPlainText()), str(self._Answer.text())))
         self.btn_Exit.clicked.connect(lambda: self.toMenu())
         self.btn_Problem.clicked.connect(lambda: self.notation())
+        self.btn_delete.clicked.connect(lambda: self.DelPressed())
+
 
     # layout os program
     def LayoutofP(self):
@@ -130,7 +134,8 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.chb_diff2,4,2)
         self.layout.addWidget(self.btn_Problem,4,3)
         self.layout.addWidget(self.btn_Submit,4,4)
-        self.layout.addWidget(self.btn_Exit,4,6)
+        self.layout.addWidget(self.btn_delete,4,6)
+        self.layout.addWidget(self.btn_Exit,5,6)
 
     #making the browse button
     def singleBrowse(self):
@@ -148,7 +153,7 @@ class MainWindow(QMainWindow):
     #to the Main Admin Screen
     def toMenu(self):
         global ex
-        ex = equi.MainWindow(self.TopicName)
+        ex = maui.MainAWindow(self.TopicName)
         ex.show()
         self.close()
 
@@ -209,7 +214,6 @@ class MainWindow(QMainWindow):
                                 #does a file already exist with that difficulty?
                                 if filename == self.importedFilename:
                                     Found = True
-                                    print "true"
                     if Found == True:
                         #read it
                         linebline = []
@@ -237,6 +241,46 @@ class MainWindow(QMainWindow):
                     self.toMenu()
         else:
             self.lbl_Error.setText("not a supported Diff")
+
+
+    #on delte is pressed
+    def DelPressed(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText("Warning!")
+        msg.setInformativeText("You are about to Delete This Question!")
+        msg.setWindowTitle("WARNING")
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg.buttonClicked.connect(self.msgbtn)
+        self.retval = msg.exec_()
+
+    #when a button on the pop up is clicked
+    def msgbtn(self,i):
+        #was it the ok button?
+        if i.text() == "OK":
+            folder = "%s\Topics" % os.getcwd()
+            linebline = []
+            File = open("%s\%s" % (folder,self.importedFilename),'r')
+            FileR = File.read()
+            Questions = FileR.split("\n")
+            FileL = 1
+            for question in Questions:
+                if FileL == self.importedLineInFile:
+                    pass
+                else:
+                    linebline.append(question.split(","))
+                FileL += 1
+            File.close()
+            #Write to it
+            File = open("%s\%s" % (folder,self.importedFilename),'w')
+            for _ in range(0,len(linebline)):
+                if _ != len(linebline) - 1:
+                    File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+                else:
+                    File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
+            self.toMenu()
+        else:
+            print "error"
 
 
     #Expands the window to include scientific notation
