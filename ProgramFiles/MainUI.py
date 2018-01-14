@@ -34,6 +34,7 @@ class MainWindow(QMainWindow):
         #init Variables
         self.Qcounter = 0
         self.questions = {}
+        self.NotationOn = False
         self.initUI()
 
     def initUI(self):
@@ -166,14 +167,17 @@ class MainWindow(QMainWindow):
         self.btnCheck = QPushButton("Check Answer", self)
         self.btnNextPrb = QPushButton("Next Question", self)
         self.btnExit = QPushButton("Exit", self)
+        self.btnNotation = QPushButton("Notation")
         #cosmetic effects to UI Elements
         self.btnCheck.setMinimumHeight(40)
         self.btnNextPrb.setMinimumHeight(40)
         self.btnExit.setMinimumHeight(40)
+        self.btnNotation.setMinimumHeight(40)
         #on button clicked
         self.btnCheck.clicked.connect(lambda: self.btncheck())
         self.btnNextPrb.clicked.connect(lambda: self.btnNextQuestion())
         self.btnExit.clicked.connect(lambda: self.toMenu())
+        self.btnNotation.clicked.connect(lambda: self.notation())
 
 
     #the Layout of the Program
@@ -189,6 +193,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self._answer,3,0,1,2)
         self.layout.addWidget(self.btnCheck,4,0)
         self.layout.addWidget(self.btnNextPrb,4,1)
+        self.layout.addWidget(self.btnNotation,4,2)
         self.layout.addWidget(self.btnExit,4,5)
 
     """ functions not do do with UI """
@@ -320,3 +325,39 @@ class MainWindow(QMainWindow):
             power = power[6:-1]
             powered = "<sup>%s</sup>" % power
             self.PowerAnswer = re.sub(r'@(Power<[^>]*>)', powered, self.PowerAnswer, count=1, flags=0)
+
+
+    #Expands the window to include scientific notation
+    def notation(self):
+        if self.NotationOn == False:
+            self.NotationOn = True
+            #constructing the widget
+            # +30px per row, added
+            self.resize(500,460)
+            self.btnSquared = QPushButton("Power of", self)
+            self.btnRooted = QPushButton("Root", self)
+            #on clicked
+            self.btnSquared.clicked.connect(lambda: self.Squared())
+            self.btnRooted.clicked.connect(lambda: self.Rooted())
+            #add to layout
+            self.layout.addWidget(self.btnSquared,5,2)
+            self.layout.addWidget(self.btnRooted,6,2)
+        else:
+            self.resize(500,400)
+            self.NotationOn = False
+            self.layout.removeWidget(self.btnSquared)
+            self.layout.removeWidget(self.btnRooted)
+            self.btnSquared.deleteLater()
+            self.btnRooted.deleteLater()
+            self.btnSquared = None
+            self.btnRooted = None
+
+    #on Squared button clicked
+    def Squared(self):
+        currentT = self._answer.text()
+        self._answer.setText("%s@Power<>" % currentT)
+
+    #when the Root Button Is Pressed
+    def Rooted(self):
+        currentT = self._answer.text()
+        self._answer.setText("%s@Root{}" % currentT)

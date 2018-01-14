@@ -146,7 +146,7 @@ class MainWindow(QMainWindow):
              self.ImageForQ.append(str(filepath[0]))
              self.ImageForQ.append(str(filepath[0].split("/")[-1]))
 
-    #restet image variable
+    #reset image variable
     def resetImag(self):
         self.ImageForQ = ["",""]
 

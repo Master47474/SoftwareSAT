@@ -136,10 +136,10 @@ class MainWindow(QMainWindow):
                             try:
                                 textT = linebline[_][0]
                                 answerT = linebline[_][1]
-                                if len(linebline[_][0]) > 15:
-                                    linebline[_][0] = "%s..." % linebline[_][0][0:15]
-                                if len(linebline[_][1]) > 15:
-                                    linebline[_][1] = "%s..." % linebline[_][1][0:15]
+                                if len(linebline[_][0]) > 20:
+                                    linebline[_][0] = "%s..." % linebline[_][0][0:20]
+                                if len(linebline[_][1]) > 20:
+                                    linebline[_][1] = "%s..." % linebline[_][1][0:20]
                                 text = linebline[_][0]
                                 answer = linebline[_][1]
                                 list2apend = [line, '%s | %d, %s, %s  ' % (line,diff,text,answer), filename, lineOfFile, textT, answerT, linebline[_][2]]
