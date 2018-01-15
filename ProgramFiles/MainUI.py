@@ -147,6 +147,8 @@ class MainWindow(QMainWindow):
         self.lbl_answer = QLabel("Answer:", self)
         self.imgProblem = QLabel(self)
         self._answer = QLineEdit()
+        self.lblPreview = QLabel(self)
+        self.btnPreviewAns = QPushButton("Preview")
         #Cosmetic effects to Elements
         self.lbl_Problem.setText("This will be the problem")
         self.lbl_Problem.setStyleSheet("background-color: #E6E6E6; border: 1px inset grey;")
@@ -157,8 +159,10 @@ class MainWindow(QMainWindow):
         self.imgProblem.setScaledContents(True)
         self.imgProblem.setMaximumSize(300,300)
         self.lbl_answer.setAlignment(Qt.AlignBottom)
+        self.lblPreview.setAlignment(Qt.AlignBottom)
         #on _Answer Enter pressed
         self._answer.returnPressed.connect(lambda : self.btncheck())
+        self.btnPreviewAns.clicked.connect(lambda : self.preview())
         self._answer.EchoMode(QLineEdit.Normal)
 
     #make bottom of problem page
@@ -188,9 +192,11 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_Diff,0,2)
         self.layout.addWidget(self.cbx_diff,0,3)
         self.layout.addWidget(self.lbl_Problem,1,0,1,2)
-        self.layout.addWidget(self.imgProblem,1,2,3,4)
+        self.layout.addWidget(self.imgProblem,1,2,3,3)
         self.layout.addWidget(self.lbl_answer,2,0)
+        self.layout.addWidget(self.lblPreview,2,1,1,4)
         self.layout.addWidget(self._answer,3,0,1,2)
+        self.layout.addWidget(self.btnPreviewAns,3,2)
         self.layout.addWidget(self.btnCheck,4,0)
         self.layout.addWidget(self.btnNextPrb,4,1)
         self.layout.addWidget(self.btnNotation,4,2)
@@ -202,13 +208,34 @@ class MainWindow(QMainWindow):
     def btncheck(self):
         #if answer entered == Answer in file
         try:
-            if self._answer.text() == self.questions[self.Qcounter][1]:
-                self._answer.setText("RIGHT WOOOO, dare try another?")
+            answer = self._answer.text()
+            print answer
+            self.FindPower(" ", answer)
+            answer = self.PowerAnswer
+            self.FindRoot(" ", answer)
+            answer = self.Rootanswer
+            if answer == self.questions[self.Qcounter][1]:
+                self.lblPreview.setText("RIGHT WOOOO, dare try another?")
             else:
-                self._answer.setText("WRONGGG")
+                self.lblPreview.setText("WRONGGG")
         except:
             pass
 
+    #on Preview button clicked, Check answer
+    def preview(self):
+        try:
+            answer = self._answer.text()
+            print answer
+            self.FindPower(" ", answer)
+            answer = self.PowerAnswer
+            self.FindRoot(" ", answer)
+            answer = self.Rootanswer
+            #set new question on screen
+            html_code = """{HTStatement}""".format(HTStatement=self.PowerAnswer)
+            self.lblPreview.setText(html_code)
+        #cant find anymore Questions
+        except:
+            pass
 
     # Forming the question on the screen
     def formQuestion(self, file):
@@ -320,7 +347,7 @@ class MainWindow(QMainWindow):
             self.PowerProblem = re.sub(r'@(Power<[^>]*>)', powered, self.PowerProblem, count=1, flags=0)
 
         self.PowerAnswer = answer
-        self.foundPowers = re.findall(r'@(Power<[^>]*>)', str(self.PowerProblem))
+        self.foundPowers = re.findall(r'@(Power<[^>]*>)', str(self.PowerAnswer))
         for power in self.foundPowers:
             power = power[6:-1]
             powered = "<sup>%s</sup>" % power

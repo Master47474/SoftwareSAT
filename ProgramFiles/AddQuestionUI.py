@@ -175,7 +175,10 @@ class MainWindow(QMainWindow):
                     #is the file a supported img file?
                     if str(self.ImageForQ[1])[-4:] == ".png" or str(self.ImageForQ[1])[-5:] == ".jpeg":
                         line = [problem, answer, str(self.ImageForQ[1])]
-                        sht.copy(str(self.ImageForQ[0]), folder1)
+                        try:
+                            sht.copy(str(self.ImageForQ[0]), folder1)
+                        except:
+                            pass
                     else:
                         #set any to false to make satement false
                         ans = False
