@@ -77,6 +77,12 @@ class MainWindow(QMainWindow):
         self.tabPromblem = QMenu('Problem', self)
         self.tabPNewP = QAction('New Problem', self)
         self.tabPSaveP = QAction('Save Problem', self)
+        self.tabPLoadP = QAction('Load Problem', self)
+
+        #actions
+        self.tabPNewP.triggered.connect(lambda: self.btnNextQuestion())
+        self.tabPSaveP.triggered.connect(lambda: self.saveProblem())
+        self.tabPLoadP.triggered.connect(lambda: self.saveProblem())
         #Test tab
         self.tabTest = QMenu('Test', self)
         self.tabTNewT = QAction('New Test', self)
@@ -85,6 +91,7 @@ class MainWindow(QMainWindow):
         #adding the submenus to the problem tab
         self.tabPromblem.addAction(self.tabPNewP)
         self.tabPromblem.addAction(self.tabPSaveP)
+        self.tabPromblem.addAction(self.tabPLoadP)
 
         #adding the submenus to the Test tab
         self.tabTest.addAction(self.tabTNewT)
@@ -192,7 +199,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_Diff,0,2)
         self.layout.addWidget(self.cbx_diff,0,3)
         self.layout.addWidget(self.lbl_Problem,1,0,1,2)
-        self.layout.addWidget(self.imgProblem,1,2,3,3)
+        self.layout.addWidget(self.imgProblem,1,2,2,4)
         self.layout.addWidget(self.lbl_answer,2,0)
         self.layout.addWidget(self.lblPreview,2,1,1,4)
         self.layout.addWidget(self._answer,3,0,1,2)
@@ -388,3 +395,11 @@ class MainWindow(QMainWindow):
     def Rooted(self):
         currentT = self._answer.text()
         self._answer.setText("%s@Root{}" % currentT)
+
+    #save a problem
+    def saveProblem(self):
+        print "saved"
+
+    #load a problem
+    def saveProblem(self):
+        print "saved"
