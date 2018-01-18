@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
         #actions
         self.tabPNewP.triggered.connect(lambda: self.btnNextQuestion())
         self.tabPSaveP.triggered.connect(lambda: self.saveProblem())
-        self.tabPLoadP.triggered.connect(lambda: self.saveProblem())
+        self.tabPLoadP.triggered.connect(lambda: self.loadProblem())
         #Test tab
         self.tabTest = QMenu('Test', self)
         self.tabTNewT = QAction('New Test', self)
@@ -398,8 +398,30 @@ class MainWindow(QMainWindow):
 
     #save a problem
     def saveProblem(self):
-        print "saved"
+        folder = "%s\SavedTopics" % os.getcwd()
+        print "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText()))
+        try:
+            #if this fails then it wont continue the code
+            FailSafe = self.questions[self.Qcounter][0]
+            print "here"
+            for root, dirs, filenames in os.walk(folder):
+                for filename in filenames:
+                    #does a file already exist with that difficulty?
+                    if filename == "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText())):
+                        print "no here"
+                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'r')
+                        print "After klopop here"
+                        rows = File.split("\n")
+                        File.close()
+                        print "NO HERE here"
+                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w')
+                        for row in rows:
+                            File.write("%s\n" % row)
+                        File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+                        File.close()
+        except:
+            pass
 
     #load a problem
-    def saveProblem(self):
+    def loadProblem(self):
         print "saved"
