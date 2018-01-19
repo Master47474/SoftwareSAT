@@ -403,22 +403,22 @@ class MainWindow(QMainWindow):
         try:
             #if this fails then it wont continue the code
             FailSafe = self.questions[self.Qcounter][0]
-            print "here"
             for root, dirs, filenames in os.walk(folder):
                 for filename in filenames:
                     #does a file already exist with that difficulty?
                     if filename == "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText())):
-                        print "no here"
                         File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'r')
-                        print "After klopop here"
-                        rows = File.split("\n")
+                        FileR = File.read()
+                        rows = FileR.split("\n")
                         File.close()
-                        print "NO HERE here"
                         File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w')
                         for row in rows:
                             File.write("%s\n" % row)
                         File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
                         File.close()
+                    else:
+                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w+')
+                        File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
         except:
             pass
 
