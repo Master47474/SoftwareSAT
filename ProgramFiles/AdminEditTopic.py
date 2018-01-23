@@ -151,9 +151,11 @@ class MainWindow(QMainWindow):
                 if num == str(self._TopicName.text())[-1]:
                     #get the folder holding the files
                     folder = "%s\Topics" %os.getcwd()
+                    folder1 = "%s\SavedTopics" %os.getcwd()
                     #replace name with new name
                     SubjectsDic[str(self.TopicName)] = ("%s" % str(self._TopicName.text()).lower(),) + SubjectsDic[str(self.TopicName)][1:]
                     #changeing the file names of any files accociated with old name to new name
+                    #for files in topics
                     for root, dirs, filenames in os.walk(folder):
                         for filename in filenames:
                             #i have no clue what this is cause i stole this line from stack overflow, all i kow is that it gets all the file paths and makes into a list
@@ -173,6 +175,29 @@ class MainWindow(QMainWindow):
                                         #rename it
                                         newname = path.replace("%s_%d.txt" % (self.TopicName, int(filename[len(self.TopicName)+1:-4])), "%s_%d.txt" % (SubjectsDic[self.TopicName][0]\
                                                                                                         , int(filename[len(self.TopicName)+1:-4])))
+                                        #put it back in its original place
+                                        if newname != path:
+                                            os.rename(path, newname)
+                    #for files in saved topics
+                    for root, dirs, filenames in os.walk(folder1):
+                        for filename in filenames:
+                            #i have no clue what this is cause i stole this line from stack overflow, all i kow is that it gets all the file paths and makes into a list
+                            pathiter = (os.path.join(root, filename) for root, _, filenames in os.walk(folder1) for filename in filenames)
+                            for path in pathiter:
+                                #if it starts with the topic name
+                                if filename.startswith(str(self.TopicName)):
+                                    try:
+                                        #rename it
+                                        newname = path.replace("%s_saved_%d.txt" % (self.TopicName, int(filename[len(self.TopicName)+7:-3])), "%s_saved_%d.txt" % (SubjectsDic[self.TopicName][0]\
+                                                                                                        , int(filename[len(self.TopicName)+7:-3])))
+                                        #put it back in its original place
+                                        if newname != path:
+                                            os.rename(path, newname)
+                                    #have a 2 didget number at the end i.e _10 not _9
+                                    except:
+                                        #rename it
+                                        newname = path.replace("%s_saved_%d.txt" % (self.TopicName, int(filename[len(self.TopicName)+7:-4])), "%s_saved_%d.txt" % (SubjectsDic[self.TopicName][0]\
+                                                                                                        , int(filename[len(self.TopicName)+7:-4])))
                                         #put it back in its original place
                                         if newname != path:
                                             os.rename(path, newname)
