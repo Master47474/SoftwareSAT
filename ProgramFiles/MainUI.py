@@ -14,6 +14,7 @@ import re
 
 #File Imports
 import MenuUI as menui
+import ViewSavedQUI as vsui
 
 
 #variables
@@ -424,4 +425,9 @@ class MainWindow(QMainWindow):
 
     #load a problem
     def loadProblem(self):
-        print "saved"
+        #load a new page
+        print "loaded"
+        global ex
+        ex = vsui.MainWindow()
+        ex.show()
+        self.close()
