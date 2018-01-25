@@ -151,11 +151,10 @@ class MainWindow(QMainWindow):
                     line.append(int(box.text()))
                 else:
                     line.append(0)
-            print line
         File = File = open("Topics.txt",'a')
         File.write("\n%s,%d,%d,%d,%d,%d,%d" % (line[0],line[1],line[2],line[3],line[4],line[5],line[6]))
         File.close()
-        #self.toMenu()
+        self.toMenu()
 
 
     #To the Main Admin Menu

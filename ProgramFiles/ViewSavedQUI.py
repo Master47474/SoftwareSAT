@@ -11,8 +11,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 #File Imports
-import MainAdminUI as maui
-import IndividualQuestionsUI as editQ
+import MainUI as mainui
+import SavedProblemsUI as spui
 
 #Variables
 File = open("Topics.txt",'r')
@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
             if cbh.isChecked() == True:
                 self.filter.append(int(cbh.text()))
         #ui cosmetics
-        mygroupbox = QGroupBox(", Difficulty, Question, Answer")
+        mygroupbox = QGroupBox("Topic, Difficulty, Question, Answer")
         self.myform = QVBoxLayout()
         files = []
         folder = "%s\SavedTopics" % os.getcwd()
@@ -141,7 +141,6 @@ class MainWindow(QMainWindow):
                     FileR = File.read()
                     Questions = FileR.split("\n")
                     #for each question, get the diff,text,answer and append and make it a row
-                    lineOfFile = 1
                     for question in Questions:
                         linebline = []
                         linebline.append(question.split(","))
@@ -149,20 +148,16 @@ class MainWindow(QMainWindow):
                             try:
                                 textT = linebline[_][0]
                                 answerT = linebline[_][1]
-                                if len(linebline[_][0]) > 20:
-                                    linebline[_][0] = "%s..." % linebline[_][0][0:20]
-                                if len(linebline[_][1]) > 20:
-                                    linebline[_][1] = "%s..." % linebline[_][1][0:20]
+                                if len(linebline[_][0]) > 25:
+                                    linebline[_][0] = "%s..." % linebline[_][0][0:25]
                                 text = linebline[_][0]
-                                answer = linebline[_][1]
-                                list2apend = [line, '%s | %d, %s, %s  ' % (filename[0:-13],diff,text,answer), filename, lineOfFile, textT, answerT, linebline[_][2]]
-                                self.FinalQuestions.append(list2apend)
+                                self.list2append = [line, '%s | %d, %s' % (filename[0:-13],diff,text), textT, answerT, linebline[_][2]]
+                                self.FinalQuestions.append(self.list2append)
                                 line += 1
-                                lineOfFile += 1
                             except:
-                                print "error"
+                                pass
             for line in range(0,line - 1):
-                btnEd = QPushButton("Edit Row %s" % self.FinalQuestions[line][0])
+                btnEd = QPushButton("To Problem %s" % self.FinalQuestions[line][0])
                 btnEd.setFixedWidth(125)
                 self.FinalButtons.addButton(btnEd)
                 hbox = QHBoxLayout()
@@ -193,21 +188,15 @@ class MainWindow(QMainWindow):
 
 
     def EditBtnClicked(self, button):
-        print int(button.text()[8:])
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][1]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][2]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][3]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][4]
-        global ex
         """ set import """
-        ex = editQ.MainWindow(self.TopicName, self.FinalQuestions[int(button.text()[8:])-1][2], self.FinalQuestions[int(button.text()[8:])-1][4]\
-                                ,self.FinalQuestions[int(button.text()[8:])-1][5],\
-                                self.FinalQuestions[int(button.text()[8:])-1][3], self.FinalQuestions[int(button.text()[8:])-1][6])
+        ex = spui.MainWindow(self.FinalQuestions[int(button.text()[10:])-1][2], self.FinalQuestions[int(button.text()[10:])-1][3]\
+                                ,self.FinalQuestions[int(button.text()[10:])-1][4])
         ex.show()
         self.close()
+
     #to the Main Admin Screen
     def toMenu(self):
         global ex
-        ex = maui.MainAWindow(self.TopicName)
+        ex = mainui.MainWindow()
         ex.show()
         self.close()

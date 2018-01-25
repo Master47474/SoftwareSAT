@@ -1,1 +1,2 @@
-what is x<sup>2</sup>,x<sup>2</sup>,null
+what is x<sup>2</sup>,21,null
+what is x,21,null

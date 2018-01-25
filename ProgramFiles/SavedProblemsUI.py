@@ -30,10 +30,14 @@ subjects = FileR.split("\n")
 #main window
 class MainWindow(QMainWindow):
     #Init Function
-    def __init__(self):
+    def __init__(self, problem, answer, image):
         super(MainWindow, self).__init__()
         #init Variables
+        self.importProblem = problem
+        self.importAnswer = answer
+        self.importImage = image
         self.Qcounter = 0
+        self.load = True
         self.questions = {}
         self.NotationOn = False
         self.initUI()
@@ -50,6 +54,12 @@ class MainWindow(QMainWindow):
         self.makeDiffButtons()
         self.makeTopicRow()
         self.makeProblem()
+        html_code = """{HTStatement}""".format(HTStatement=self.importProblem)
+        self.lbl_Problem.setText(html_code)
+        if self.importImage != "null":
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % self.importImage))
+        else:
+            self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
         self.makeBottom()
         #layouts the elements
         self.LayoutofP()
@@ -216,15 +226,27 @@ class MainWindow(QMainWindow):
     def btncheck(self):
         #if answer entered == Answer in file
         try:
-            answer = self._answer.text()
-            self.FindPower(" ", answer)
-            answer = self.PowerAnswer
-            self.FindRoot(" ", answer)
-            answer = self.Rootanswer
-            if answer == self.questions[self.Qcounter][1]:
-                self.lblPreview.setText("RIGHT WOOOO, dare try another?")
+            if self.load == True:
+                answer = self._answer.text()
+                self.FindPower(" ", answer)
+                answer = self.PowerAnswer
+                self.FindRoot(" ", answer)
+                answer = self.Rootanswer
+                if answer == self.importAnswer:
+                    self.lblPreview.setText("RIGHT WOOOO, dare try another?")
+                else:
+                    self.lblPreview.setText("WRONGGG")
             else:
-                self.lblPreview.setText("WRONGGG")
+                answer = self._answer.text()
+                self.FindPower(" ", answer)
+                answer = self.PowerAnswer
+                self.FindRoot(" ", answer)
+                answer = self.Rootanswer
+                if answer == self.questions[self.Qcounter][1]:
+                    self.lblPreview.setText("RIGHT WOOOO, dare try another?")
+                else:
+                    self.lblPreview.setText("WRONGGG")
+        #cant prosess this for some reason
         except:
             pass
 
@@ -239,7 +261,7 @@ class MainWindow(QMainWindow):
             #set new question on screen
             html_code = """{HTStatement}""".format(HTStatement=answer)
             self.lblPreview.setText(html_code)
-        #cant find anymore Questions
+        #cant prosess this for some reason
         except:
             pass
 
@@ -273,6 +295,7 @@ class MainWindow(QMainWindow):
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/%s" % self.questions[self.Qcounter][2]))
         else:
             self.imgProblem.setPixmap(QPixmap(os.getcwd() + "/Pictures/null.png"))
+        self.load = False
 
     #when a difficulty button is clicked
     def PrbBtnClicked(self, inte):
@@ -393,32 +416,33 @@ class MainWindow(QMainWindow):
     #when the Root Button Is Pressed
     def Rooted(self):
         currentT = self._answer.text()
-        self._answer.setText("%s@Root{}" % currentT)
+        self._answer.setText("%s@Root/{/}" % currentT)
 
     #save a problem
     def saveProblem(self):
-        folder = "%s\SavedTopics" % os.getcwd()
-        try:
-            #if this fails then it wont continue the code
-            FailSafe = self.questions[self.Qcounter][0]
-            for root, dirs, filenames in os.walk(folder):
-                for filename in filenames:
-                    #does a file already exist with that difficulty?
-                    if filename == "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText())):
-                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'r')
-                        FileR = File.read()
-                        rows = FileR.split("\n")
-                        File.close()
-                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w')
-                        for row in rows:
-                            File.write("%s\n" % row)
-                        File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
-                        File.close()
-                    else:
-                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w+')
-                        File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
-        except:
-            pass
+        if self.load == False:
+            folder = "%s\SavedTopics" % os.getcwd()
+            try:
+                #if this fails then it wont continue the code
+                FailSafe = self.questions[self.Qcounter][0]
+                for root, dirs, filenames in os.walk(folder):
+                    for filename in filenames:
+                        #does a file already exist with that difficulty?
+                        if filename == "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText())):
+                            File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'r')
+                            FileR = File.read()
+                            rows = FileR.split("\n")
+                            File.close()
+                            File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w')
+                            for row in rows:
+                                File.write("%s\n" % row)
+                            File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+                            File.close()
+                        else:
+                            File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w+')
+                            File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+            except:
+                pass
 
     #load a problem
     def loadProblem(self):

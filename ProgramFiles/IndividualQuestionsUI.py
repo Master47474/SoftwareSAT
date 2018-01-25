@@ -224,7 +224,6 @@ class MainWindow(QMainWindow):
                         for question in Questions:
                             if FileL == self.importedLineInFile:
                                 linebline.append(line)
-                                print "appended to line"
                             else:
                                 linebline.append(question.split(","))
                             FileL += 1
@@ -236,8 +235,6 @@ class MainWindow(QMainWindow):
                                 File.write("%s,%s,%s\n" % (linebline[_][0],linebline[_][1],linebline[_][2]))
                             else:
                                 File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
-                    else:
-                        print "error"
                     self.toMenu()
         else:
             self.lbl_Error.setText("not a supported Diff")
@@ -279,9 +276,6 @@ class MainWindow(QMainWindow):
                 else:
                     File.write("%s,%s,%s" % (linebline[_][0],linebline[_][1],linebline[_][2]))
             self.toMenu()
-        else:
-            print "error"
-
 
     #Expands the window to include scientific notation
     def notation(self):

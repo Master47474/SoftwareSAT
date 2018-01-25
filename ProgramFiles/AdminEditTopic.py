@@ -253,7 +253,6 @@ class MainWindow(QMainWindow):
             items = []
             #make the detailed msg
             for num in range(7,12):
-                print num
                 if num in diffs:
                     items.append("Diffuculty: %d" % num)
             #makes the Detailed msg with all info such as topic name and what files will be deleted
@@ -323,7 +322,7 @@ class MainWindow(QMainWindow):
                         try:
                             os.remove(os.path.join(folder,filename))
                         except:
-                            print "error"
+                            pass
             #resplitting
             SubjectsDic = self.Splittting()
             #deleting the subject from the dirctionary

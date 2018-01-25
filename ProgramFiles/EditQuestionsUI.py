@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
                                 line += 1
                                 lineOfFile += 1
                             except:
-                                print "error"
+                                pass
             for line in range(0,line - 1):
                 btnEd = QPushButton("Edit Row %s" % self.FinalQuestions[line][0])
                 btnEd.setFixedWidth(125)
@@ -179,11 +179,6 @@ class MainWindow(QMainWindow):
 
 
     def EditBtnClicked(self, button):
-        print int(button.text()[8:])
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][1]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][2]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][3]
-        print self.FinalQuestions[int(button.text()[8:]) -1 ][4]
         global ex
         """ set import """
         ex = editQ.MainWindow(self.TopicName, self.FinalQuestions[int(button.text()[8:])-1][2], self.FinalQuestions[int(button.text()[8:])-1][4]\
