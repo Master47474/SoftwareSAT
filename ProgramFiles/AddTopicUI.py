@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
         self.chb_diff4 = QCheckBox("10",self)
         self.chb_diff5 = QCheckBox("11",self)
         self.chb_diff6 = QCheckBox("12",self)
+        self.lbl_error = QLabel(self)
         #list of all checkboxes
         cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
         #should chekcbox start ticked?
@@ -100,6 +101,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_TopicN,0,0,1,7)
         self.layout.addWidget(self.lbl_TopicChange,1,0)
         self.layout.addWidget(self._TopicName,1,1,1,4)
+        self.layout.addWidget(self.lbl_error,1,5,1,2)
         self.layout.addWidget(self.lbl_TopicDChange,2,0)
         self.layout.addWidget(self.chb_diff1,2,1)
         self.layout.addWidget(self.chb_diff2,2,2)
@@ -134,13 +136,12 @@ class MainWindow(QMainWindow):
         name = False
         prev = " "
         #me checking for doulbe spaces
-        AllG = False
+        AllG = True
         for num in str(self._TopicName.text()):
             if num == prev and num == " ":
-                print "enter a valid name"
+                self.lbl_error.setText("enter a valid name")
+                AllG = False
                 break
-            else:
-                AllG = True
             prev = num
         if AllG == True:
             #if the last letter is == to the last letter of the topic
@@ -151,10 +152,10 @@ class MainWindow(QMainWindow):
                     line.append(int(box.text()))
                 else:
                     line.append(0)
-        File = File = open("Topics.txt",'a')
-        File.write("\n%s,%d,%d,%d,%d,%d,%d" % (line[0],line[1],line[2],line[3],line[4],line[5],line[6]))
-        File.close()
-        self.toMenu()
+            File = File = open("Topics.txt",'a')
+            File.write("\n%s,%d,%d,%d,%d,%d,%d" % (line[0],line[1],line[2],line[3],line[4],line[5],line[6]))
+            File.close()
+            self.toMenu()
 
 
     #To the Main Admin Menu

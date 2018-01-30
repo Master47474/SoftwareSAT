@@ -89,6 +89,7 @@ class MainWindow(QMainWindow):
         self.chb_diff1.setChecked(True)
         self.cbxGroup.addButton(self.chb_diff1,0)
         self.cbxGroup.addButton(self.chb_diff2,1)
+        self.lbl_photo = QLabel("Null", self)
 
         #Cosmetic effects for Ui
         self.lbl_TopicN.setAlignment(Qt.AlignCenter)
@@ -126,6 +127,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_Error,1,5,1,2)
         self.layout.addWidget(self.lbl_prb,2,0)
         self.layout.addWidget(self._Problem,2,1,1,4)
+        self.layout.addWidget(self.lbl_photo,2,5)
         self.layout.addWidget(self.lbl_Answer,3,0)
         self.layout.addWidget(self._Answer,3,1,1,4)
         self.layout.addWidget(self.btnBrowse,3,5)
@@ -145,10 +147,12 @@ class MainWindow(QMainWindow):
              self.ImageForQ = []
              self.ImageForQ.append(str(filepath[0]))
              self.ImageForQ.append(str(filepath[0].split("/")[-1]))
+             self.lbl_photo.setText(self.ImageForQ[1])
 
     #reset image variable
     def resetImag(self):
         self.ImageForQ = ["",""]
+        self.lbl_photo.setText("Null")
 
     #to the Main Admin Screen
     def toMenu(self):
@@ -177,27 +181,34 @@ class MainWindow(QMainWindow):
             #testing to see if any fields are left blank
             prob = True
             ans = True
+            comma = True
             if len(problem) == 0 or len(answer) == 0 or problem == " " or answer == " ":
-                self.lbl_Error.setText("enter a valid problem or Answer")
+                self.lbl_Error.setText("No Empty Fields")
             else:
                 prev = " "
                 for num in problem:
                     if num == prev and num == " ":
-                        self.lbl_Error.setText("enter a valid problem")
+                        self.lbl_Error.setText("No Double Spaces")
                         prob = False
                     prev = num
                 prev = " "
                 for num in answer:
                     if num == prev and num == " ":
-                        self.lbl_Error.setText("enter a valid answer")
+                        self.lbl_Error.setText("No Double Spaces")
                         ans = False
                     prev = num
+                if "," in problem or "," in answer:
+                    self.lbl_Error.setText("No Commas")
+                    comma = False
                 #the Line to be written to the file
                 if str(self.ImageForQ[1]) != "":
                     #is the file a supported img file?
                     if str(self.ImageForQ[1])[-4:] == ".png" or str(self.ImageForQ[1])[-5:] == ".jpeg":
                         line = [problem, answer, str(self.ImageForQ[1])]
-                        sht.copy(str(self.ImageForQ[0]), folder1)
+                        try:
+                            sht.copy(str(self.ImageForQ[0]), folder1)
+                        except:
+                            pass
                     else:
                         #set any to false to make satement false
                         ans = False
@@ -205,7 +216,7 @@ class MainWindow(QMainWindow):
                 else:
                     line = [problem, answer, "null"]
                 # if all tests are passed
-                if prob and ans == True:
+                if prob and ans and comma == True:
                     #is difficulty supported by topic?
                     Found = False
                     if diff in diffs:

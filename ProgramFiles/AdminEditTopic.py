@@ -79,6 +79,7 @@ class MainWindow(QMainWindow):
         self.chb_diff4 = QCheckBox("10",self)
         self.chb_diff5 = QCheckBox("11",self)
         self.chb_diff6 = QCheckBox("12",self)
+        self.lbl_error = QLabel(self)
         #list of all checkboxes
         cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
         #remaking the Dictionary incase of anychanges
@@ -106,6 +107,7 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.lbl_TopicN,0,0,1,7)
         self.layout.addWidget(self.lbl_TopicChange,1,0)
         self.layout.addWidget(self._TopicName,1,1,1,4)
+        self.layout.addWidget(self.lbl_error,1,5,1,2)
         self.layout.addWidget(self.lbl_TopicDChange,2,0)
         self.layout.addWidget(self.chb_diff1,2,1)
         self.layout.addWidget(self.chb_diff2,2,2)
@@ -144,7 +146,7 @@ class MainWindow(QMainWindow):
         #me checking for doulbe spaces
         for num in str(self._TopicName.text()):
             if num == prev and num == " ":
-                print "enter a valid name"
+                self.lbl_error.setText("enter a valid name")
                 break
             else:
                 #if the last letter is == to the last letter of the topic
@@ -217,7 +219,7 @@ class MainWindow(QMainWindow):
                         SubjectsDic[str(self.TopicName)][1][num] = 0
             self.ConfirmDel(*dellist)
         except:
-            print "failed with check boxes"
+            pass
         #ordering the topic names
         ordered = {}
         for key in sorted(SubjectsDic.iterkeys()):
@@ -268,6 +270,7 @@ class MainWindow(QMainWindow):
         #was it the ok button?
         if i.text() == "OK":
             folder = "%s\Topics" %os.getcwd()
+            folder1 = "%s\SavedTopics" %os.getcwd()
             cbx = [self.chb_diff1,self.chb_diff2,self.chb_diff3,self.chb_diff4,self.chb_diff5,self.chb_diff6]
             #loop through and delete al files that need to be delted
             for num in range(0,len(cbx)):
@@ -278,6 +281,13 @@ class MainWindow(QMainWindow):
                         for filename in filenames:
                             if filename == "%s_%d.txt" % (str(self.TopicName), int(SubjectsDic[str(self.TopicName)][1][num])):
                                 os.remove(os.path.join(folder, filename))
+                    for root, dirs, filenames in os.walk(folder1):
+                        for filename in filenames:
+                            try:
+                                if filename == "%s_saved_%d.txt" % (self.TopicName, int(filename[len(self.TopicName)+7:-4])):
+                                    os.remove(os.path.join(folder1, filename))
+                            except:
+                                pass
                     #remember to set it back to 0
                     SubjectsDic[str(self.TopicName)][1][num] = 0
 
