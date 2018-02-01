@@ -1,2 +1,0 @@
-what is x<sup>2</sup>,21,null
-what is x,21,null

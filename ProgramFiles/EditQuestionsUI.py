@@ -119,9 +119,9 @@ class MainWindow(QMainWindow):
             buttons = {}
             for filename in files:
                 try:
-                    diff = int(filename[11:13])
+                    diff = int(filename[-6:-4])
                 except:
-                    diff = int(filename[11])
+                    diff = int(filename[-5])
                 if diff in self.filter:
                     #read the file and get the questions
                     File = open("%s\%s" % (folder, filename),'r')

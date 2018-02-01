@@ -1,2 +1,0 @@
-Solve For the x intercept/s. x@Power<2>,0,null
-x ints for x@Power<2>,0,null

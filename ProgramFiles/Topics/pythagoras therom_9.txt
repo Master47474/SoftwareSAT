@@ -1,1 +1,5 @@
-Sole for H, x@Power<2>,1,null
+What is the length of the Hypotnuse?,@Root{2},py1.png
+What is the length of the Hypotnuse?,5,py2.png
+If H = 5 and B = 4. Then what does A equal?,3,null
+A = 5. B=12 what is H?,13,null
+A = @Root{2}. B = @Root{3}. H = ?,5,null
