@@ -84,23 +84,14 @@ class MainWindow(QMainWindow):
         self.tabPNewP.triggered.connect(lambda: self.btnNextQuestion())
         self.tabPSaveP.triggered.connect(lambda: self.saveProblem())
         self.tabPLoadP.triggered.connect(lambda: self.loadProblem())
-        #Test tab
-        self.tabTest = QMenu('Test', self)
-        self.tabTNewT = QAction('New Test', self)
-        self.tabTSaveT = QAction('Save Test', self)
 
         #adding the submenus to the problem tab
         self.tabPromblem.addAction(self.tabPNewP)
         self.tabPromblem.addAction(self.tabPSaveP)
         self.tabPromblem.addAction(self.tabPLoadP)
 
-        #adding the submenus to the Test tab
-        self.tabTest.addAction(self.tabTNewT)
-        self.tabTest.addAction(self.tabTSaveT)
-
         #add all menus to the file tab
         self.mbFile.addMenu(self.tabPromblem)
-        self.mbFile.addMenu(self.tabTest)
 
     #makes topic label and search bar
     def makeTopicRow(self):
@@ -398,26 +389,43 @@ class MainWindow(QMainWindow):
     #save a problem
     def saveProblem(self):
         folder = "%s\SavedTopics" % os.getcwd()
+        print "its here fuck face"
         try:
             #if this fails then it wont continue the code
             FailSafe = self.questions[self.Qcounter][0]
+            print FailSafe
+            print folder
             for root, dirs, filenames in os.walk(folder):
-                for filename in filenames:
-                    #does a file already exist with that difficulty?
-                    if filename == "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText())):
-                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'r')
-                        FileR = File.read()
-                        rows = FileR.split("\n")
-                        File.close()
-                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w')
-                        for row in rows:
-                            File.write("%s\n" % row)
-                        File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
-                        File.close()
-                    else:
-                        File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w+')
-                        File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+                Thefilename = "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText()))
+                print filenames
+                print Thefilename
+                if Thefilename in filenames:
+                    print "true"
+                    for filename in filenames:
+                        #does a file already exist with that difficulty?
+                        if filename == Thefilename:
+                            print "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText()))
+                            File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'r')
+                            FileR = File.read()
+                            rows = FileR.split("\n")
+                            File.close()
+                            File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w')
+                            for row in rows:
+                                File.write("%s\n" % row)
+                            File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+                            File.close()
+                        else:
+                            File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w+')
+                            File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+                else:
+                    print "false"
+                    print "%s_saved_%d.txt" % (self._Topic.text().lower(), int(self.cbx_diff.currentText()))
+                    print "second"
+                    File = open("%s\%s_saved_%d.txt" % (folder,self._Topic.text().lower(), int(self.cbx_diff.currentText())),'w+')
+                    File.write("%s,%s,%s" % (self.questions[self.Qcounter][0], self.questions[self.Qcounter][1], self.questions[self.Qcounter][2]))
+                    File.close()
         except:
+            print "pass"
             pass
 
     #load a problem
